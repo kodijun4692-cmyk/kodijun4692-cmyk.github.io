@@ -267,8 +267,10 @@
     width:44px;height:44px;border-radius:50%;background:#fff;border:2.5px solid #0F1E36;
   }
   .cta-apply .cta-hand svg{width:26px;height:26px;display:block;fill:#0F1E36}
-  .cta-apply .cta-txt{display:block;min-width:0;font-size:20px;font-weight:900;letter-spacing:-.025em;line-height:1.24;word-break:keep-all}
-  .cta-apply .cta-txt small{display:block;margin-top:4px;font-size:13.5px;font-weight:700;color:#5A3E00;letter-spacing:0;line-height:1.4;word-break:keep-all}
+  .cta-apply .cta-txt{display:block;min-width:0;text-align:left}
+  .cta-apply .cta-brand{display:block;font-size:13.5px;font-weight:800;color:#6B4600;letter-spacing:-.01em;line-height:1.3;word-break:keep-all}
+  .cta-apply .cta-act{display:block;margin-top:2px;font-size:22px;font-weight:900;letter-spacing:-.03em;line-height:1.2;word-break:keep-all}
+  .cta-note{margin:10px 0 0;text-align:center;font-size:13px;font-weight:600;color:#5A6478;line-height:1.5;word-break:keep-all}
   .cta-tel{
     display:flex;align-items:center;justify-content:center;gap:9px;
     min-height:58px;margin-top:12px;border-radius:14px;text-decoration:none;
@@ -280,7 +282,7 @@
   .apply-cta{margin:18px 0 18px}
   @media (max-width:400px){
     .cta-apply{padding:14px 12px;gap:10px}
-    .cta-apply .cta-txt{font-size:18px}
+    .cta-apply .cta-act{font-size:20px}
     .cta-apply .cta-hand{width:40px;height:40px}
     .cta-apply .cta-hand svg{width:24px;height:24px}
   }
@@ -607,9 +609,10 @@
         <p class="cta-lead">내 상황에 맞는 판단은 상담에서 확인하실 수 있습니다.</p>
         <a class="cta-apply" id="ctaForm" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">
           <span class="cta-hand" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/></svg></span>
-          <span class="cta-txt">드림 종합법률세무사무소 상담 신청하기<small>입력한 조건이 신청서에 자동으로 채워집니다</small></span>
+          <span class="cta-txt"><span class="cta-brand">드림 종합법률세무사무소</span><span class="cta-act">상담 신청하기</span></span>
         </a>
         <a class="cta-tel" href="tel:02-6956-8141"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>전화 상담 02-6956-8141</a>
+        <p class="cta-note">입력한 조건이 신청서에 자동으로 채워집니다.</p>
       </div>
     </div>
   </div>
