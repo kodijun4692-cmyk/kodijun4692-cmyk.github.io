@@ -352,7 +352,7 @@
       <div class="field">
         <label class="label" for="living">월 생계비 <span class="tag" id="livingTag">자동 제안</span></label>
         <div class="money">
-          <input id="living" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" placeholder="예: 1,400,000" aria-describedby="livingHint">
+          <input id="living" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" placeholder="예: 2,519,575" aria-describedby="livingHint">
           <span class="won">원</span>
         </div>
         <div class="hint" id="livingHint"></div>
@@ -430,7 +430,8 @@
       <li>본 계산은 참고용 추정이며, 실제 인가 여부와 변제금액은 법원의 결정에 따릅니다.</li>
       <li>입력하신 정보는 서버로 전송되지 않고 이 화면(브라우저) 안에서만 계산됩니다.</li>
       <li>주민등록번호 등 민감한 정보는 입력받지 않습니다.</li>
-      <li>생계비는 부양가족 수에 따른 단순 제안값으로, 법원 실무 기준과 다를 수 있습니다.</li>
+      <li>월 생계비 제안값은 2026년 기준중위소득 60%로, 개인회생 생계비(최저생계비) 산정 기준입니다. 주거비·교육비·의료비 등 추가 생계비와 법원 결정에 따라 달라질 수 있습니다.</li>
+      <li>2026년 기준중위소득 60%(월): 1인 1,538,543원 · 2인 2,519,575원 · 3인 3,215,422원 · 4인 3,896,843원 · 5인 4,534,031원 · 6인 5,133,571원</li>
     </ul>
   </section>
 
@@ -466,7 +467,7 @@
     debt: 0,
     income: 0,
     fam: 2,
-    living: 1400000,
+    living: 2519575,
     livingEdited: false,
     months: 36,
     asset: 0
@@ -475,7 +476,15 @@
   var $ = function(id){ return document.getElementById(id); };
   var debtEl = $('debt'), incomeEl = $('income'), livingEl = $('living'), assetEl = $('asset');
 
-  function suggest(n){ return 1000000 + (n - 1) * 400000; }
+  // 2026년 기준 중위소득 60% = 개인회생 생계비(최저생계비) 산정 기준
+  // 근거: 보건복지부 고시 제2025-135호(2026.1.1. 시행) 2026년 기준 중위소득 × 60%, 원 단위 반올림
+  //       개인회생사건 처리지침 제7조 제2항 — 개시신청 당시 기준 중위소득의 100분의 60
+  // 100% 금액: 1인 2,564,238 / 2인 4,199,292 / 3인 5,359,036 / 4인 6,494,738 / 5인 7,556,719 / 6인 8,555,952
+  var LIVING_2026 = { 1: 1538543, 2: 2519575, 3: 3215422, 4: 3896843, 5: 4534031, 6: 5133571 };
+  function suggest(n){
+    var k = Math.max(1, Math.min(6, n || 1));
+    return LIVING_2026[k];
+  }
   function num(v){ return Number(v || 0).toLocaleString('en-US'); }
   function toDigits(raw){
     var d = String(raw || '').replace(/[^0-9]/g, '');
@@ -659,7 +668,7 @@
     var tag = $('livingTag');
     tag.textContent = '직접 입력';
     tag.className = 'tag edit';
-    $('livingHint').innerHTML = '직접 입력하신 금액입니다 · 제안값 <b>' + num(suggest(S.fam)) + '원</b>';
+    $('livingHint').innerHTML = '직접 입력하신 금액입니다 · 2026년 기준중위소득 60% <b>' + num(suggest(S.fam)) + '원</b>';
   });
 
   bindMoney(assetEl, 'asset', function(){
@@ -680,8 +689,8 @@
     }
     var h = $('livingHint');
     h.innerHTML = S.livingEdited
-      ? '제안값 <b>' + num(suggest(S.fam)) + '원</b> · 직접 수정하셨습니다'
-      : '부양가족 ' + S.fam + '명 기준 제안값 (법원 실무 기준과 다를 수 있음)';
+      ? '2026년 기준중위소득 60% 제안값 <b>' + num(suggest(S.fam)) + '원</b> · 직접 수정하셨습니다'
+      : '2026년 기준중위소득 60% (부양가족 ' + S.fam + '명 기준, 법원 결정에 따라 달라질 수 있음)';
     render();
   }
 
