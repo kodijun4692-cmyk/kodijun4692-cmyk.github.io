@@ -349,9 +349,18 @@
     display:flex;gap:9px;align-items:flex-start;
     background:#FFF8E8;border:2px solid #DFB347;border-left-width:6px;border-radius:13px;
     padding:15px 16px;margin:0 0 14px;
-    font-size:16px;font-weight:800;color:#54340A;line-height:1.7;letter-spacing:-.005em;
+    font-size:16px;font-weight:800;color:#54340A;line-height:1.7;letter-spacing:-.005em;word-break:keep-all;
   }
   .fee-notice .mark{flex:0 0 auto;font-size:16px;line-height:1.7;color:#9A6710}
+  /* 상담 안내(절세·변제 판단은 상담에서 확인) */
+  .consult-note{
+    display:flex;gap:9px;align-items:flex-start;
+    background:#EDF2FA;border:2px solid #AEC1DE;border-left-width:6px;border-radius:13px;
+    padding:15px 16px;margin:0 0 16px;
+    font-size:15.5px;font-weight:700;color:#1F2F49;line-height:1.75;letter-spacing:-.005em;word-break:keep-all;
+  }
+  .consult-note .mark{flex:0 0 auto;font-size:16px;line-height:1.75;color:#3B5580}
+  .consult-note b{color:#0F2A52}
   .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
   :focus-visible{outline:3px solid #C39418;outline-offset:2px}
   @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
@@ -604,6 +613,8 @@
         <div class="calc" id="calcLine"></div>
         <div class="msg" id="msg" role="status"></div>
       </section>
+
+      <p class="consult-note"><span class="mark" aria-hidden="true">※</span><span>본 결과는 참고용 모의계산이며 법원이 정할 변제금액을 예측한 것이 아닙니다. 이자·청산가치·특별한 사정에 따라 달라지므로 <b>정확한 가능 여부는 상담을 통해 확인해 주세요.</b></span></p>
 
       <div class="cta">
         <p class="cta-lead">내 상황에 맞는 판단은 상담에서 확인하실 수 있습니다.</p>

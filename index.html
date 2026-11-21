@@ -348,9 +348,18 @@
     display:flex;gap:9px;align-items:flex-start;
     background:#FFF8E8;border:2px solid #DFB347;border-left-width:6px;border-radius:13px;
     padding:15px 16px;margin:0 0 14px;
-    font-size:16px;font-weight:800;color:#54340A;line-height:1.7;letter-spacing:-.005em;
+    font-size:16px;font-weight:800;color:#54340A;line-height:1.7;letter-spacing:-.005em;word-break:keep-all;
   }
   .fee-notice .mark{flex:0 0 auto;font-size:16px;line-height:1.7;color:#9A6710}
+  /* 상담 안내(절세·변제 판단은 상담에서 확인) */
+  .consult-note{
+    display:flex;gap:9px;align-items:flex-start;
+    background:#EDF2FA;border:2px solid #AEC1DE;border-left-width:6px;border-radius:13px;
+    padding:15px 16px;margin:0 0 16px;
+    font-size:15.5px;font-weight:700;color:#1F2F49;line-height:1.75;letter-spacing:-.005em;word-break:keep-all;
+  }
+  .consult-note .mark{flex:0 0 auto;font-size:16px;line-height:1.75;color:#3B5580}
+  .consult-note b{color:#0F2A52}
   .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
   :focus-visible{outline:3px solid #C39418;outline-offset:2px}
   @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
@@ -479,6 +488,8 @@
     <div class="diff-card" id="diffCard"></div>
     <p class="result-note">본 계산기는 2026년 기준 모의 계산이며, 공제·감면 항목에 따라 실제 세액이 달라질 수 있습니다.</p>
 
+    <p class="consult-note"><span class="mark" aria-hidden="true">※</span><span>지역가입자는 재산분 보험료가 별도로 부과되며, 각종 세액공제·감면·업종에 따라 실제 세 부담은 크게 달라질 수 있습니다. <b>정확한 절세 판단은 상담을 통해 확인해 주세요.</b></span></p>
+
     <div class="cta">
       <p class="cta-lead">내 상황에 맞는 판단은 상담에서 확인하실 수 있습니다.</p>
       <a class="cta-apply" id="ctaForm1" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">
@@ -571,7 +582,7 @@
 
     <div id="warnBox2"></div>
     <div class="diff-card" id="regSummary"></div>
-    <p class="fee-notice"><span class="mark" aria-hidden="true">※</span><span>위 합계는 국가·법원에 납부하는 공과금 기준이며, <b>사무소 등기 대행 보수는 별도</b>입니다.</span></p>
+    <p class="fee-notice"><span class="mark" aria-hidden="true">※</span><span>위 합계는 국가·법원에 납부하는 공과금 기준이며, <b>사무소 등기 대행 보수 및 공증료·인감도장 등 실비는 별도</b>입니다.</span></p>
 
     <div class="apply-cta">
       <a class="cta-apply" id="ctaForm2" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">
@@ -591,7 +602,7 @@
         <li>등록면허세는 자본금의 0.4%에 최소 세액 112,500원을 적용합니다(지방세법 제28조). 과밀억제권역 설립은 3배인 1.2%, 최소 세액 337,500원입니다.</li>
         <li>지방교육세는 등록면허세의 20%를 더합니다(지방세법 제151조).</li>
         <li>등기신청수수료는 전자신청 20,000원, 방문 서면신청 35,000원입니다(등기사항증명서 등 수수료규칙).</li>
-        <li>인지세는 자본금 1억 원 초과 시 15만 원(10억 원 이하)으로 참고 반영했습니다. 주권 발행과 전자등기 방식에 따라 달라질 수 있습니다.</li>
+        <li>설립등기 자체에는 인지세가 없습니다. 실물 주권을 발행할 때만 1통당 400원(인지세법 제3조 제1항 제9호)이 부과되며, 전자등록주식이나 주권 불소지 신고 시에는 과세되지 않습니다.</li>
         <li>법무사 보수, 정관 공증료, 잔액증명 수수료, 인감·도장 비용은 공과금에 포함되지 않아 제외했습니다.</li>
         <li>자본금이 2,812만 5,000원 이하이면 최소 세액이 적용되어 자본금을 낮춰도 세액이 줄지 않습니다.</li>
         <li>본점 주소지만 과밀억제권역 밖에 두고 실제 사업장을 권역 안에 두면 추가로 중과세될 수 있습니다.</li>
@@ -650,11 +661,10 @@ var CALC = (function () {
     minTaxOverpop: 337500,
     eduRate: 0.20,
     feeElectronic: 20000,
-    feeVisit: 35000,
-    stampThreshold: 100000000,   // 1억 원 초과
-    stampHighThreshold: 10000000000,
-    stamp: 150000,
-    stampHigh: 350000
+    feeVisit: 35000
+    // 설립등기 자체에는 인지세가 없습니다(인지세법 제3조①9호는 실물 주권 1통당 400원만 규정,
+    // 같은 법 시행령 제6조의2는 전자등록주식·불소지 주권을 과세 대상에서 제외).
+    // 따라서 합계에 인지세를 더하지 않고 '0원'으로 표시합니다.
   };
 
   function safe(n) {
@@ -826,11 +836,6 @@ var CALC = (function () {
     var eduTax = Math.floor(regTax * REG.eduRate);
     var fee = opts.eFiling === false ? REG.feeVisit : REG.feeElectronic;
 
-    var stamp = 0;
-    if (capital > REG.stampThreshold) {
-      stamp = capital > REG.stampHighThreshold ? REG.stampHigh : REG.stamp;
-    }
-
     return {
       capital: capital,
       overpop: overpop,
@@ -840,8 +845,8 @@ var CALC = (function () {
       regTax: regTax,
       eduTax: eduTax,
       fee: fee,
-      stamp: stamp,
-      total: regTax + eduTax + fee + stamp,
+      stamp: 0,   // 설립등기 비과세(실물 주권 발행 시에만 1통당 400원)
+      total: regTax + eduTax + fee,
       minApplied: taxRate < minTax
     };
   }
@@ -1296,11 +1301,9 @@ var CALC = (function () {
     var rowsHtml = [
       { k: '등록면허세 (' + (r.multiplier === 3 ? '1.2%' : '0.4%') + ')', v: won(r.regTax) },
       { k: '지방교육세 (등록면허세의 20%)', v: won(r.eduTax) },
-      { k: '등기신청수수료', v: won(r.fee) }
+      { k: '등기신청수수료', v: won(r.fee) },
+      { k: '인지세 (설립등기 비과세)', v: won(0) }
     ];
-    if (r.stamp > 0) {
-      rowsHtml.push({ k: '인지세 (자본금 1억 원 초과)', v: won(r.stamp) });
-    }
 
     cardRegistration.innerHTML =
       '<div class="r-title">공과금 내역 <span class="badge">' + regionLabel + '</span></div>' +
@@ -1327,7 +1330,7 @@ var CALC = (function () {
     regSummary.innerHTML =
       '<div class="k">예상 공과금 합계</div>' +
       '<div class="v">' + won(r.total) + '</div>' +
-      '<p>' + note + ' 법무사 보수와 공증료는 포함되지 않았습니다.</p>' +
+      '<p>' + note + ' 등기 대행 보수와 공증료·인감도장 등 실비는 포함되지 않았습니다.</p>' +
       '<div class="split">' + diffText + '</div>';
 
     // 상담 신청 링크에 지금 화면의 설립 조건과 공과금 합계를 미리 채운다.
