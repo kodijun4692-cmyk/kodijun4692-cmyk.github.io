@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+
+<meta name="theme-color" content="#0B1B36">
+<meta name="description" content="채무액과 월 소득을 넣으면 36개월·60개월 기준 예상 탕감액과 월 변제금을 계산해 보여 드립니다. 드림 종합법률세무사무소 (변호사 김치현).">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1B36'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-size='15' font-weight='700' fill='%23F5C451' text-anchor='middle'%3E%EB%93%9C%3C/text%3E%3C/svg%3E">
+<title>드림 종합법률세무사무소｜개인회생 탕감 계산기(참고용)</title>
+<style>
+  :root{
+    --navy-0:#06101F;
+    --navy-1:#0B1B36;
+    --navy-2:#152A50;
+    --gold:#F5C451;
+    --gold-soft:#EDCB86;
+    --ink:#FFFFFF;
+    --ink-2:#D8E2EF;
+    --ink-3:#B2C0D4;
+    --line:rgba(255,255,255,.16);
+    --card:rgba(255,255,255,.06);
+    --card-line:rgba(245,196,81,.30);
+    --focus:#FFD87A;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%;background:#06101F}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Helvetica Neue",Arial,sans-serif;
+    font-size:17px;
+    line-height:1.7;
+    color:var(--ink);
+    letter-spacing:-0.01em;
+    -webkit-font-smoothing:antialiased;
+  }
+  b,strong{font-weight:800}
+  .bg{
+    position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(120% 70% at 50% -10%, #22406F 0%, rgba(34,64,111,0) 62%),
+      radial-gradient(90% 50% at 100% 100%, rgba(245,196,81,.10) 0%, rgba(245,196,81,0) 70%),
+      linear-gradient(180deg, var(--navy-1) 0%, var(--navy-2) 55%, var(--navy-0) 100%);
+  }
+
+  /* ── header ── */
+  .site-header{border-bottom:2px solid rgba(245,196,81,.55);background:rgba(6,16,31,.55)}
+  .site-header .inner{
+    max-width:1020px;margin:0 auto;padding:14px 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:11px;min-width:0}
+  .brand .mark{
+    width:42px;height:42px;flex:0 0 42px;border-radius:11px;
+    background:linear-gradient(140deg,var(--gold) 0%,#C08F1F 100%);
+    color:#0B1B36;font-weight:800;font-size:16px;letter-spacing:-.05em;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .brand .name{font-size:17.5px;font-weight:800;line-height:1.3;color:#fff;letter-spacing:-.02em}
+  .brand .sub{font-size:14.5px;font-weight:600;color:var(--gold-soft);line-height:1.35;margin-top:2px}
+  .head-tel{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    min-height:46px;padding:10px 16px;border-radius:999px;
+    background:var(--gold);color:#101C33;text-decoration:none;
+    font-size:16.5px;font-weight:800;letter-spacing:0;white-space:nowrap;
+  }
+  .head-tel:hover{background:#FFD670}
+  @media (max-width:640px){
+    .head-tel{flex:1 1 100%;min-height:52px;font-size:17px}
+  }
+
+  /* ── layout ── */
+  .wrap{
+    width:100%;max-width:620px;margin:0 auto;
+    padding:22px 20px calc(30px + env(safe-area-inset-bottom));
+  }
+  .hero{padding:4px 2px 22px}
+  .hero h1{
+    margin:0;font-size:clamp(24px,6.6vw,26.5px);line-height:1.3;font-weight:800;letter-spacing:-.035em;
+  }
+  .hero h1 .accent{color:var(--gold)}
+  .hero .lead{margin:12px 0 0;font-size:16.5px;line-height:1.72;color:var(--ink-2)}
+  .hero .meta{
+    margin:14px 0 0;display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+    font-size:14.5px;line-height:1.6;color:var(--ink-3);
+  }
+  .chip{
+    display:inline-block;padding:4px 10px;border-radius:7px;font-size:13.5px;font-weight:800;
+    color:#101C33;background:var(--gold);letter-spacing:0;white-space:nowrap;
+  }
+  .chip.ghost{background:transparent;color:var(--gold-soft);border:1.5px solid rgba(245,196,81,.5);font-weight:700}
+  .hero-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .reset{
+    appearance:none;background:transparent;border:1.5px solid var(--line);color:var(--ink-2);
+    font:inherit;font-size:14.5px;font-weight:700;min-height:44px;padding:8px 16px;border-radius:999px;cursor:pointer;
+    transition:color .15s,border-color .15s;
+  }
+  .reset:hover{color:#fff;border-color:rgba(255,255,255,.45)}
+
+  .layout{display:flex;flex-direction:column;gap:16px}
+  .stack{display:flex;flex-direction:column;gap:16px}
+
+  /* ── cards ── */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:22px 20px;
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    box-shadow:0 18px 40px -28px rgba(0,0,0,.9);
+  }
+  .card.result{
+    border-color:var(--card-line);
+    background:linear-gradient(180deg,rgba(245,196,81,.10) 0%,rgba(255,255,255,.05) 45%,rgba(255,255,255,.045) 100%);
+  }
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .card-title{margin:0;font-size:21px;font-weight:800;letter-spacing:-.02em;color:#fff;display:flex;align-items:center;gap:9px}
+  .card-title .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);flex:0 0 9px}
+
+  /* ── fields ── */
+  .field{margin-bottom:24px}
+  .field:last-child{margin-bottom:0}
+  .label{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:17px;font-weight:800;color:#fff;margin-bottom:10px;line-height:1.4}
+  .label .opt{font-size:14.5px;font-weight:600;color:var(--ink-3)}
+  .label .tag{
+    font-size:13.5px;font-weight:800;color:#101C33;background:var(--gold);
+    border-radius:999px;padding:3px 10px;letter-spacing:0;
+  }
+  .label .tag.edit{color:var(--gold-soft);background:transparent;border:1.5px solid rgba(245,196,81,.5)}
+  .money{position:relative}
+  .money input{
+    width:100%;height:60px;padding:0 40px 0 16px;
+    font:inherit;font-size:21px;font-weight:800;letter-spacing:.01em;
+    color:#fff;text-align:right;
+    background:rgba(4,12,26,.66);
+    border:1.5px solid rgba(255,255,255,.20);
+    border-radius:13px;outline:none;
+    transition:border-color .15s,box-shadow .15s,background .15s;
+    font-variant-numeric:tabular-nums;
+  }
+  .money input::placeholder{color:#93A3B9;font-weight:600;font-size:17px}
+  .money input:focus{
+    border-color:rgba(245,196,81,.85);
+    box-shadow:0 0 0 4px rgba(245,196,81,.22);
+    background:rgba(4,12,26,.85);
+  }
+  .money .won{position:absolute;right:15px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:800;color:var(--ink-3);pointer-events:none}
+  .hint{margin-top:9px;font-size:14.5px;line-height:1.65;color:var(--ink-3);min-height:1.65em}
+  .hint b{color:var(--gold);font-weight:800}
+
+  /* stepper */
+  .stepper{display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 7px;
+    background:rgba(4,12,26,.66);border:1.5px solid rgba(255,255,255,.20);border-radius:13px}
+  .step{
+    appearance:none;width:46px;height:46px;border-radius:11px;border:1.5px solid rgba(255,255,255,.22);
+    background:rgba(255,255,255,.08);color:#fff;font-size:24px;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s,opacity .15s;
+    font-family:inherit;font-weight:700;
+  }
+  .step:hover:not(:disabled){background:rgba(245,196,81,.22);border-color:rgba(245,196,81,.65)}
+  .step:disabled{opacity:.32;cursor:default}
+  .step-val{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums}
+  .step-val small{font-size:16px;font-weight:600;color:var(--ink-2);margin-left:3px}
+
+  /* period tabs */
+  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:6px;background:rgba(4,12,26,.66);
+    border:1.5px solid rgba(255,255,255,.20);border-radius:13px}
+  .tab{
+    appearance:none;border:0;background:transparent;color:var(--ink-2);font:inherit;font-size:17px;font-weight:800;
+    min-height:58px;padding:10px 8px;border-radius:10px;cursor:pointer;line-height:1.3;
+    transition:background .18s,color .18s,box-shadow .18s;
+  }
+  .tab small{display:block;font-size:13.5px;font-weight:600;color:var(--ink-3);margin-top:3px;letter-spacing:0}
+  .tab[aria-selected="true"]{background:linear-gradient(180deg,#FFD877,#EAB53E);color:#121C30;box-shadow:0 6px 16px -10px rgba(245,196,81,.9)}
+  .tab[aria-selected="true"] small{color:rgba(18,28,48,.72)}
+
+  /* ── result ── */
+  .hero-amount{
+    margin:0 0 18px;padding:20px 18px;border-radius:17px;
+    background:linear-gradient(180deg,rgba(245,196,81,.16),rgba(245,196,81,.055));
+    border:1.5px solid rgba(245,196,81,.40);
+  }
+  .res-label{display:block;font-size:15px;font-weight:800;color:var(--gold-soft);letter-spacing:.02em}
+  .amount{font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .amount .u{font-size:.5em;font-weight:700;color:var(--gold-soft);margin-left:3px;letter-spacing:0}
+  .hero-amount .amount{display:block;margin-top:6px;color:var(--gold);font-size:clamp(30px,8.4vw,34px);line-height:1.16;text-shadow:0 0 26px rgba(245,196,81,.28)}
+  .hero-amount .amount.is-empty{color:rgba(245,196,81,.5);letter-spacing:2px}
+  .hero-amount .exact{margin-top:8px;font-size:14.5px;font-weight:600;color:rgba(245,196,81,.85);font-variant-numeric:tabular-nums;line-height:1.5}
+
+  .kv{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.09)}
+  .kv:last-of-type{border-bottom:0}
+  .kv .k{font-size:16.5px;line-height:1.45;color:var(--ink-2);font-weight:700}
+  .kv .k small{display:block;font-size:14px;font-weight:600;color:var(--ink-3);margin-top:2px}
+  .kv .v{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap}
+  .kv .v .u{font-size:14.5px;color:var(--ink-3);font-weight:700;margin-left:2px;letter-spacing:0}
+
+  /* rate bar */
+  .rate{margin-top:18px}
+  .rate-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .rate-top .k{font-size:16.5px;color:var(--ink-2);font-weight:700;line-height:1.4}
+  .rate-top .p{font-size:24px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1.2}
+  .rate-top .p.is-empty{color:rgba(245,196,81,.55);font-weight:700}
+  .track{height:16px;border-radius:99px;background:rgba(255,255,255,.13);overflow:hidden;position:relative;box-shadow:inset 0 1px 2px rgba(0,0,0,.4)}
+  .fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#C79427 0%,#F5C451 55%,#FFE29A 100%);
+    transition:width .45s cubic-bezier(.22,.75,.3,1);box-shadow:0 0 14px rgba(245,196,81,.45)}
+  .scale{display:flex;justify-content:space-between;margin-top:8px;font-size:13.5px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .calc{margin-top:18px;padding:15px 15px;border-radius:12px;background:rgba(4,12,26,.55);border:1px solid rgba(255,255,255,.10);
+    font-size:14.5px;line-height:1.85;color:#C9D6E7;font-variant-numeric:tabular-nums;word-break:keep-all}
+  .calc .cl{display:flex;gap:8px;align-items:baseline}
+  .calc .cl+.cl{margin-top:4px}
+  .calc .cn{color:var(--gold);font-weight:800;font-size:14px;flex:0 0 auto;width:14px;text-align:center;line-height:1.7}
+  .calc b{color:#fff;font-weight:800}
+  .msg{margin-top:14px;padding:13px 15px;border-radius:12px;font-size:15px;line-height:1.7;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--ink-2);display:none}
+  .msg.show{display:block}
+  .msg.warn{background:rgba(245,196,81,.13);border-color:rgba(245,196,81,.42);color:#FBE4B4}
+
+  /* ── notes ── */
+  .notes ul{margin:0;padding:0;list-style:none}
+  .notes li{position:relative;padding-left:16px;font-size:15px;line-height:1.8;color:var(--ink-2);word-break:keep-all}
+  .notes li+li{margin-top:9px}
+  .notes li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+  .disclaimer{
+    margin:16px 0 0;padding:18px 18px;border:1.5px dashed rgba(255,255,255,.28);border-radius:14px;
+    font-size:15px;line-height:1.85;color:var(--ink-2);word-break:keep-all;
+  }
+  .disclaimer b{color:#fff}
+
+  /* ── CTA ── */
+  .cta{margin:0}
+  .cta .cta-lead{margin:0 0 12px;font-size:15px;line-height:1.65;color:var(--ink-3);text-align:center}
+  .cta .btn{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    min-height:62px;padding:16px 14px;border-radius:14px;text-decoration:none;
+    font-size:17.5px;font-weight:800;letter-spacing:-.01em;line-height:1.4;text-align:center;
+  }
+  .cta .btn + .btn{margin-top:10px}
+  .cta .primary{background:linear-gradient(180deg,#FFD877,#EDB83F);color:#101C33;box-shadow:0 8px 22px -12px rgba(245,196,81,.9)}
+  .cta .primary:hover{background:linear-gradient(180deg,#FFE093,#F5C451)}
+  .cta .secondary{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.55)}
+  .cta .secondary:hover{border-color:#fff;background:rgba(255,255,255,.07)}
+
+  /* ── footer ── */
+  .site-footer{margin-top:26px;padding:24px 20px 34px;border-top:1px solid rgba(255,255,255,.14);background:rgba(4,12,26,.5)}
+  .site-footer .inner{max-width:1020px;margin:0 auto;font-size:15px;line-height:1.9;color:#C3D1E3}
+  .site-footer .f-name{color:#fff;font-weight:800;font-size:18px;line-height:1.45;margin-bottom:2px}
+  .site-footer .f-tel{color:var(--gold-soft);font-weight:800;text-decoration:none}
+  .site-footer .f-copy{margin-top:12px;font-size:14.5px;color:var(--ink-3);line-height:1.8}
+
+  /* ── 하단 고정 요약 ── */
+  .sticky{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:40;
+    width:100%;max-width:620px;display:none;
+    padding:12px 20px calc(12px + env(safe-area-inset-bottom));
+    background:rgba(6,16,31,.96);
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    border-top:2px solid rgba(245,196,81,.55);
+    box-shadow:0 -12px 30px -18px rgba(0,0,0,.95);
+  }
+  .sticky.on{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .sticky .sl{display:block;font-size:13.5px;font-weight:600;color:var(--ink-3);margin-bottom:2px;letter-spacing:.02em}
+  .sticky .sv{font-size:22px;font-weight:800;color:var(--gold);letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .sticky .sv .u{font-size:14px;color:var(--gold-soft);font-weight:700;margin-left:2px}
+  .sticky .right{text-align:right;flex:0 0 auto}
+  .sticky .right .sv{color:#fff;font-size:18px}
+  body.hasbar .wrap{padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+  body.hasbar .site-footer{padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+
+  @media (min-width:1000px){
+    .wrap{max-width:1020px;padding:26px 28px 56px}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+    .stack{gap:18px}
+    .sticky{display:none!important}
+    body.hasbar .wrap{padding-bottom:56px}
+    body.hasbar .site-footer{padding-bottom:38px}
+    .hero h1{font-size:32px}
+    .site-footer{padding:28px 28px 38px}
+  }
+  @media (max-width:374px){
+    .wrap{padding-left:15px;padding-right:15px}
+    .brand .name{font-size:16.5px}
+    .card{padding:20px 16px}
+    .kv .v{font-size:18px}
+    .cta .btn{font-size:17px;min-height:60px}
+  }
+  :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">드림</span>
+      <div>
+        <div class="name">드림 종합법률세무사무소</div>
+        <div class="sub">변호사 김치현</div>
+      </div>
+    </div>
+    <a class="head-tel" href="tel:02-6956-8141">📞 02-6956-8141</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <h1>개인회생 <span class="accent">탕감 계산기</span></h1>
+    <p class="lead">채무액과 월 소득을 넣으면 36개월·60개월 기준으로 예상 탕감액과 월 변제금을 바로 보여 드립니다.</p>
+    <div class="hero-foot">
+      <p class="meta"><span class="chip">참고용 추정</span> 입력하는 즉시 계산됩니다</p>
+      <button class="reset" type="button" id="resetBtn">초기화</button>
+    </div>
+  </section>
+
+  <div class="layout">
+    <!-- 입력 -->
+    <section class="card" aria-labelledby="inTitle">
+      <div class="card-head"><h2 class="card-title" id="inTitle"><span class="dot" aria-hidden="true"></span>1 · 정보 입력</h2></div>
+
+      <div class="field">
+        <label class="label" for="debt">총 채무액</label>
+        <div class="money">
+          <input id="debt" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" placeholder="예: 50,000,000" aria-describedby="debtHint">
+          <span class="won">원</span>
+        </div>
+        <div class="hint" id="debtHint"></div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="income">월 실수령 소득</label>
+        <div class="money">
+          <input id="income" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" placeholder="예: 2,500,000" aria-describedby="incomeHint">
+          <span class="won">원</span>
+        </div>
+        <div class="hint" id="incomeHint">세금·4대보험을 뺀 실제 통장에 들어오는 금액</div>
+      </div>
+
+      <div class="field">
+        <div class="label" id="famLabel">부양가족 수 <span class="opt">본인 포함</span></div>
+        <div class="stepper" role="group" aria-labelledby="famLabel">
+          <button class="step" type="button" id="famMinus" aria-label="부양가족 수 줄이기">−</button>
+          <span class="step-val" id="famVal" aria-live="polite">2<small>명</small></span>
+          <button class="step" type="button" id="famPlus" aria-label="부양가족 수 늘리기">+</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="living">월 생계비 <span class="tag" id="livingTag">자동 제안</span></label>
+        <div class="money">
+          <input id="living" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" placeholder="예: 1,400,000" aria-describedby="livingHint">
+          <span class="won">원</span>
+        </div>
+        <div class="hint" id="livingHint"></div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="asset">보유 재산 <span class="opt">선택 · 청산가치</span></label>
+        <div class="money">
+          <input id="asset" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" placeholder="선택 입력" aria-describedby="assetHint">
+          <span class="won">원</span>
+        </div>
+        <div class="hint" id="assetHint">예금·차량 등 재산에서 담보·최우선변제를 뺀 가액</div>
+      </div>
+
+      <div class="field">
+        <div class="label" id="perLabel">변제 기간</div>
+        <div class="tabs" role="tablist" aria-labelledby="perLabel">
+          <button class="tab" type="button" role="tab" id="tab36" aria-selected="true" data-months="36">36개월<small>3년</small></button>
+          <button class="tab" type="button" role="tab" id="tab60" aria-selected="false" data-months="60">60개월<small>5년</small></button>
+        </div>
+      </div>
+    </section>
+
+    <div class="stack">
+      <!-- 결과 -->
+      <section class="card result" aria-labelledby="outTitle">
+        <div class="card-head">
+          <h2 class="card-title" id="outTitle"><span class="dot" aria-hidden="true"></span>2 · 예상 결과</h2>
+          <span class="chip ghost" id="outPeriod">36개월 기준</span>
+        </div>
+
+        <div class="hero-amount" aria-live="polite">
+          <span class="res-label">예상 탕감액</span>
+          <span class="amount" id="forgiveNum">0<span class="u">만 원</span></span>
+          <div class="exact" id="forgiveExact"></div>
+        </div>
+
+        <div class="kv">
+          <span class="k">월 변제 예정액<small>월 가용소득 기준</small></span>
+          <span class="v"><span id="availNum">0</span><span class="u">원</span></span>
+        </div>
+        <div class="kv">
+          <span class="k">총 변제 예정액</span>
+          <span class="v" id="totalNum">0<span class="u">만 원</span></span>
+        </div>
+        <div class="kv" id="assetRow" style="display:none">
+          <span class="k">재산 청산가치</span>
+          <span class="v" id="assetNum">0<span class="u">만 원</span></span>
+        </div>
+
+        <div class="rate">
+          <div class="rate-top">
+            <span class="k">채무 대비 변제율</span>
+            <span class="p" id="rateNum">—</span>
+          </div>
+          <div class="track" role="img" aria-label="변제율 막대" id="track"><div class="fill" id="fill"></div></div>
+          <div class="scale"><span>0%</span><span>50%</span><span>100%</span></div>
+        </div>
+
+        <div class="calc" id="calcLine"></div>
+        <div class="msg" id="msg" role="status"></div>
+      </section>
+
+      <div class="cta">
+        <p class="cta-lead">내 상황에 맞는 판단은 상담에서 확인하실 수 있습니다.</p>
+        <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">👉 드림 종합법률세무사무소 상담 신청</a>
+        <a class="btn secondary" href="tel:02-6956-8141">📞 전화 상담 (02-6956-8141)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 안내 -->
+  <section class="card notes" aria-label="안내">
+    <ul>
+      <li>본 계산은 참고용 추정이며, 실제 인가 여부와 변제금액은 법원의 결정에 따릅니다.</li>
+      <li>입력하신 정보는 서버로 전송되지 않고 이 화면(브라우저) 안에서만 계산됩니다.</li>
+      <li>주민등록번호 등 민감한 정보는 입력받지 않습니다.</li>
+      <li>생계비는 부양가족 수에 따른 단순 제안값으로, 법원 실무 기준과 다를 수 있습니다.</li>
+    </ul>
+  </section>
+
+  <p class="disclaimer"><b>안내.</b> 본 계산기는 참고용 모의 계산이며, 재산·소득·부양가족 상황에 따라 실제 변제금액과 인가 여부가 달라질 수 있습니다. 계산 결과는 참고용이며 법률 자문을 대신하지 않습니다.</p>
+
+  <div class="sticky" id="sticky" aria-hidden="true">
+    <div>
+      <span class="sl">예상 탕감액</span>
+      <span class="sv" id="sbForgive">0<span class="u">만 원</span></span>
+    </div>
+    <div class="right">
+      <span class="sl">채무 대비 변제율</span>
+      <span class="sv" id="sbRate">0.0%</span>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="inner">
+    <div class="f-name">드림 종합법률세무사무소</div>
+    <div>변호사 김치현</div>
+    <div>서울특별시 성동구 왕십리로 58, 서울숲포휴 5층 518호</div>
+    <div>대표전화 <a class="f-tel" href="tel:02-6956-8141">02-6956-8141</a></div>
+    <div class="f-copy">본 계산기는 참고용 모의 계산이며, 실제 인가 여부와 변제금액은 법원의 결정에 따릅니다.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var S = {
+    debt: 0,
+    income: 0,
+    fam: 2,
+    living: 1400000,
+    livingEdited: false,
+    months: 36,
+    asset: 0
+  };
+
+  var $ = function(id){ return document.getElementById(id); };
+  var debtEl = $('debt'), incomeEl = $('income'), livingEl = $('living'), assetEl = $('asset');
+
+  function suggest(n){ return 1000000 + (n - 1) * 400000; }
+  function num(v){ return Number(v || 0).toLocaleString('en-US'); }
+  function toDigits(raw){
+    var d = String(raw || '').replace(/[^0-9]/g, '');
+    d = d.replace(/^0+(?=\d)/, '');
+    return d.slice(0, 12);
+  }
+  function setMoney(el, value){ el.value = value ? num(value) : ''; }
+  function parseDigits(el){ var d = toDigits(el.value); return d ? parseInt(d, 10) : 0; }
+
+  // "3,960만 원" 형태의 조각으로 변환
+  function parts(v){
+    v = Math.max(0, Math.round(v));
+    if (v >= 100000000){
+      var eok = Math.round((v / 100000000) * 10) / 10;
+      return { v: num(eok), u: '억 원' };
+    }
+    if (v >= 10000) return { v: num(Math.round(v / 10000)), u: '만 원' };
+    return { v: num(v), u: '원' };
+  }
+  function put(el, v){
+    var p = parts(v);
+    el.innerHTML = p.v + '<span class="u">' + p.u + '</span>';
+  }
+  function manLabel(v){
+    var p = parts(v);
+    return p.v + p.u;
+  }
+
+  // ── 렌더 ──
+  function render(){
+    var d = S.debt, inc = S.income, liv = S.living, m = S.months, asset = S.asset;
+    var avail = Math.max(0, inc - liv);
+    var total = avail * m;
+    var forgive = Math.max(0, d - total);
+    var ready = d > 0 && inc > 0;
+    var rate = ready ? Math.min(100, (total / d) * 100) : null;
+
+    // 월 가용소득
+    $('availNum').textContent = num(avail);
+
+    // 탕감액
+    var heroNum = $('forgiveNum');
+    if (ready){
+      put(heroNum, forgive);
+      heroNum.className = 'amount';
+      $('forgiveExact').textContent = '정확히 ' + num(d - total > 0 ? d - total : 0) + '원';
+    } else {
+      heroNum.innerHTML = '—';
+      heroNum.className = 'amount is-empty';
+      $('forgiveExact').textContent = d > 0 ? '월 실수령 소득을 입력해 주세요' : '총 채무액을 입력해 주세요';
+    }
+
+    // 총 변제 예정액
+    put($('totalNum'), total);
+
+    // 재산
+    if (asset > 0){
+      $('assetRow').style.display = 'flex';
+      put($('assetNum'), asset);
+    } else {
+      $('assetRow').style.display = 'none';
+    }
+
+    // 변제율
+    if (rate === null){
+      $('rateNum').textContent = '—';
+      $('rateNum').className = 'p is-empty';
+      $('fill').style.width = '0%';
+    } else {
+      $('rateNum').className = 'p';
+      $('rateNum').textContent = (Math.round(rate * 10) / 10).toFixed(1) + '%';
+      $('fill').style.width = Math.max(0, Math.min(100, rate)) + '%';
+    }
+    $('track').setAttribute('aria-label', '채무 대비 변제율 ' + (rate === null ? '계산 전' : (Math.round(rate*10)/10).toFixed(1) + '%'));
+
+    // 기간 표기
+    $('outPeriod').textContent = m + '개월 기준';
+
+    // 산식
+    var line = '';
+    if (inc > 0){
+      var rows = [];
+      rows.push('<div class="cl"><span class="cn">1</span><span>' + num(inc) + '원 − ' + num(liv) + '원 생계비 = <b>' + num(avail) + '원</b></span></div>');
+      rows.push('<div class="cl"><span class="cn">2</span><span>' + num(avail) + '원 × ' + m + '개월 = <b>' + num(total) + '원</b></span></div>');
+      if (d > 0 && ready){
+        rows.push(total < d
+          ? '<div class="cl"><span class="cn">3</span><span>' + num(d) + '원 − ' + num(total) + '원 = <b>' + num(d - total) + '원</b> 탕감</span></div>'
+          : '<div class="cl"><span class="cn">3</span><span>' + num(d) + '원 <b>전액 변제</b> · 탕감 없음</span></div>');
+      }
+      line = rows.join('');
+    } else {
+      line = d > 0 ? '월 소득을 입력하면 계산 과정이 여기에 표시됩니다.' : '금액을 입력하면 계산 과정이 여기에 표시됩니다.';
+    }
+    $('calcLine').innerHTML = line;
+
+    // 안내 문구
+    var msg = $('msg');
+    var text = '', warn = false;
+    if (d <= 0){
+      text = '';
+    } else if (inc <= 0){
+      text = '월 실수령 소득을 입력하면 예상 탕감액이 계산됩니다.';
+    } else if (avail <= 0){
+      text = '생계비가 소득보다 많아 월 가용소득이 0원입니다. 생계비를 조정하거나 소득을 다시 확인해 주세요.';
+      warn = true;
+    } else if (asset > 0 && total < asset){
+      text = '변제 예정액이 재산 청산가치(' + manLabel(asset) + ')보다 적습니다. 실제 인가 시 조정될 수 있습니다.';
+      warn = true;
+    } else if (total >= d){
+      text = '채무 전액을 변제하는 조건이라 예상 탕감액이 0원입니다.';
+    }
+    // 하단 고정 요약
+    var bar = $('sticky');
+    if (ready){
+      put($('sbForgive'), forgive);
+      $('sbRate').textContent = rate === null ? '—' : (Math.round(rate * 10) / 10).toFixed(1) + '%';
+      bar.classList.add('on');
+      document.body.classList.add('hasbar');
+    } else {
+      bar.classList.remove('on');
+      document.body.classList.remove('hasbar');
+    }
+
+    msg.textContent = text;
+    msg.className = 'msg' + (text ? ' show' : '') + (warn ? ' warn' : '');
+  }
+
+  // 콤마를 넣어도 커서는 원래 자리에 둔다(가운데 고치기·지우기가 튀지 않게).
+  function formatTyping(el){
+    var raw = el.value;
+    var caret = raw.length;
+    try { if (el.selectionStart != null) caret = el.selectionStart; } catch (e) {}
+    var digitsBefore = raw.slice(0, caret).replace(/[^0-9]/g, '').length;
+    var d = toDigits(raw);
+    var next = d ? num(d) : '';
+    if (next !== raw){
+      el.value = next;
+      var pos = 0, seen = 0;
+      while (pos < next.length && seen < digitsBefore){
+        var c = next.charCodeAt(pos);
+        if (c >= 48 && c <= 57) seen++;
+        pos++;
+      }
+      try { el.setSelectionRange(pos, pos); } catch (e) {}
+    }
+    return d;
+  }
+
+  // ── 입력 처리 ──
+  function bindMoney(el, key, after){
+    el.addEventListener('input', function(){
+      var d = formatTyping(el);
+      S[key] = d ? parseInt(d, 10) : 0;
+      if (after) after();
+      render();
+    });
+    el.addEventListener('change', function(){
+      var d = formatTyping(el);
+      S[key] = d ? parseInt(d, 10) : 0;
+      if (after) after();
+      render();
+    });
+    el.addEventListener('blur', function(){
+      var d = formatTyping(el);
+      el.value = d ? num(d) : '';
+    });
+  }
+
+  bindMoney(debtEl, 'debt', function(){
+    var h = $('debtHint');
+    h.innerHTML = S.debt > 0 ? '약 <b>' + manLabel(S.debt) + '</b>' : '';
+  });
+
+  bindMoney(incomeEl, 'income', function(){
+    var h = $('incomeHint');
+    h.innerHTML = S.income > 0 ? '약 <b>' + manLabel(S.income) + '</b>' : '세금·4대보험을 뺀 실제 통장에 들어오는 금액';
+  });
+
+  bindMoney(livingEl, 'living', function(){
+    S.livingEdited = true;
+    var tag = $('livingTag');
+    tag.textContent = '직접 입력';
+    tag.className = 'tag edit';
+    $('livingHint').innerHTML = '직접 입력하신 금액입니다 · 제안값 <b>' + num(suggest(S.fam)) + '원</b>';
+  });
+
+  bindMoney(assetEl, 'asset', function(){
+    var h = $('assetHint');
+    h.innerHTML = S.asset > 0
+      ? '약 <b>' + manLabel(S.asset) + '</b> · 변제액과 비교해 안내합니다'
+      : '예금·차량 등 재산에서 담보·최우선변제를 뺀 가액';
+  });
+
+  function setFam(n){
+    S.fam = Math.max(1, Math.min(6, n));
+    $('famVal').innerHTML = S.fam + '<small>명</small>';
+    $('famMinus').disabled = S.fam <= 1;
+    $('famPlus').disabled = S.fam >= 6;
+    if (!S.livingEdited){
+      S.living = suggest(S.fam);
+      setMoney(livingEl, S.living);
+    }
+    var h = $('livingHint');
+    h.innerHTML = S.livingEdited
+      ? '제안값 <b>' + num(suggest(S.fam)) + '원</b> · 직접 수정하셨습니다'
+      : '부양가족 ' + S.fam + '명 기준 제안값 (법원 실무 기준과 다를 수 있음)';
+    render();
+  }
+
+  $('famMinus').addEventListener('click', function(){ setFam(S.fam - 1); });
+  $('famPlus').addEventListener('click', function(){ setFam(S.fam + 1); });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'), function(t){
+    t.addEventListener('click', function(){
+      Array.prototype.forEach.call(document.querySelectorAll('.tab'), function(o){
+        o.setAttribute('aria-selected', o === t ? 'true' : 'false');
+      });
+      S.months = parseInt(t.getAttribute('data-months'), 10);
+      render();
+    });
+  });
+
+  $('resetBtn').addEventListener('click', function(){
+    S.debt = 0; S.income = 0; S.asset = 0;
+    S.fam = 2; S.living = suggest(2); S.livingEdited = false; S.months = 36;
+    setMoney(debtEl, 0); setMoney(incomeEl, 0); setMoney(assetEl, 0);
+    $('debtHint').innerHTML = ''; $('incomeHint').textContent = '세금·4대보험을 뺀 실제 통장에 들어오는 금액';
+    $('assetHint').textContent = '예금·차량 등 재산에서 담보·최우선변제를 뺀 가액';
+    var lt = $('livingTag');
+    lt.textContent = '자동 제안';
+    lt.className = 'tag';
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function(o){
+      o.setAttribute('aria-selected', o.id === 'tab36' ? 'true' : 'false');
+    });
+    setFam(2);
+    render();
+  });
+
+  // 초기 상태
+  setMoney(livingEl, S.living);
+  setFam(2);
+  render();
+})();
+</script>
+</body>
+</html>

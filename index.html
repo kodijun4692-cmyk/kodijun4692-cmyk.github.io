@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>드림 세무계산기 | 드림 종합법률세무사무소</title>
+<meta name="description" content="개인사업자와 1인 법인의 세금·건강보험료를 비교하고, 법인설립 등록면허세와 공과금을 계산해 보세요. 드림 종합법률세무사무소 (변호사 김치현).">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230E1D34'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-size='15' font-weight='700' fill='%23E5B542' text-anchor='middle'%3E%EB%93%9C%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --navy:#0E1D34;
+    --navy-soft:#1B3054;
+    --gold:#E5B542;
+    --gold-soft:#FBF1D8;
+    --ink:#16202F;
+    --muted:#4F586C;
+    --line:#DDE3EE;
+    --bg:#F4F6FA;
+    --white:#fff;
+    --radius:16px;
+    --shadow:0 1px 2px rgba(14,29,52,.05), 0 8px 24px rgba(14,29,52,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Segoe UI",Roboto,sans-serif;
+    font-size:17px;
+    line-height:1.7;
+    -webkit-text-size-adjust:100%;
+    -webkit-font-smoothing:antialiased;
+  }
+  b,strong{font-weight:700}
+  .num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+  /* ---------- header ---------- */
+  .site-header{background:var(--navy);color:#fff;border-bottom:3px solid var(--gold)}
+  .site-header .inner{
+    max-width:760px;margin:0 auto;padding:16px 18px;
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 auto}
+  .brand .mark{
+    width:44px;height:44px;border-radius:11px;background:var(--gold);
+    color:var(--navy);font-weight:800;font-size:17px;letter-spacing:-.05em;
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+  }
+  .brand .name{
+    font-size:clamp(22px,5.6vw,25px);font-weight:800;letter-spacing:-.02em;line-height:1.28;color:#fff;
+  }
+  .brand .sub{font-size:15px;font-weight:600;color:#C2CEDF;line-height:1.3;margin-top:3px}
+  .head-tel{
+    flex:1 1 100%;display:flex;align-items:center;justify-content:center;
+    min-height:50px;text-decoration:none;color:var(--navy);
+    background:var(--gold);border-radius:12px;padding:12px 18px;
+    font-size:17px;font-weight:800;letter-spacing:.01em;white-space:nowrap;
+  }
+  @media (min-width:620px){
+    .head-tel{flex:0 0 auto;min-height:46px;border-radius:999px;padding:10px 20px;font-size:16px}
+  }
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px 40px}
+  .hero{padding:28px 0 16px}
+  .hero h1{
+    margin:0 0 10px;font-size:clamp(24px,6vw,27px);line-height:1.3;
+    letter-spacing:-.02em;font-weight:800;color:var(--navy);
+  }
+  .hero h1 .accent{color:#98670C}
+  .hero p{margin:0;color:#334056;font-size:16.5px;line-height:1.72}
+  .hero .meta{margin-top:12px;font-size:14.5px;color:var(--muted);line-height:1.6}
+
+  /* ---------- tabs ---------- */
+  .tabs{
+    display:grid;grid-template-columns:1fr 1fr;gap:7px;
+    background:#E6EAF2;padding:6px;border-radius:16px;margin:18px 0 20px;
+  }
+  .tab{
+    appearance:none;border:0;background:transparent;cursor:pointer;
+    font:inherit;font-weight:800;font-size:16.5px;color:#414B60;
+    min-height:54px;padding:11px 8px;border-radius:12px;line-height:1.32;letter-spacing:-.015em;
+  }
+  .tab[aria-selected="true"]{background:var(--white);color:var(--navy);box-shadow:0 1px 4px rgba(14,29,52,.16)}
+  .tab .t-num{display:block;font-size:13px;font-weight:800;color:#586275;letter-spacing:.04em;margin-bottom:2px}
+  .tab[aria-selected="true"] .t-num{color:#8A5F0A}
+
+  /* ---------- cards ---------- */
+  .card{
+    background:var(--white);border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px;
+  }
+  .card h2{
+    margin:0 0 6px;font-size:20px;font-weight:800;color:var(--navy);letter-spacing:-.02em;line-height:1.35;
+    display:flex;align-items:center;gap:9px;
+  }
+  .card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex:0 0 auto}
+  .card .lead{margin:0 0 20px;font-size:15px;color:#525C70;line-height:1.65}
+
+  .field{margin-bottom:24px}
+  .field:last-child{margin-bottom:2px}
+  .field-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:9px}
+  .field-head label{font-size:16.5px;font-weight:800;color:#1E2839;line-height:1.4}
+  .field-head .hint{font-size:13.5px;color:#5A6478;text-align:right;line-height:1.45;font-weight:600}
+  .field .desc{margin:2px 0 0;font-size:14.5px;color:#525C70;line-height:1.65}
+
+  .input-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .input-line .box{
+    display:flex;align-items:center;gap:8px;flex:1 1 190px;min-width:0;
+    border:1.5px solid #C9D1E0;border-radius:12px;background:#FBFCFE;padding:0 14px;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .input-line .box:focus-within{border-color:#C39418;box-shadow:0 0 0 3px rgba(229,181,66,.28);background:#fff}
+  .input-line input[type="text"],
+  .input-line input[type="number"]{
+    appearance:none;-moz-appearance:textfield;border:0;background:transparent;outline:0;
+    font:inherit;font-weight:800;font-size:21px;color:var(--navy);letter-spacing:-.01em;
+    padding:13px 0;flex:1 1 auto;width:100%;min-width:0;max-width:100%;
+    text-align:right;font-variant-numeric:tabular-nums;
+  }
+  @media (min-width:620px){
+    .input-line .box{flex:0 1 340px}
+  }
+  .input-line input[type="number"]::-webkit-outer-spin-button,
+  .input-line input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .input-line .unit{font-size:15.5px;font-weight:800;color:#4F586C;flex:0 0 auto}
+  .input-line .chips{display:flex;gap:6px;flex:0 0 auto}
+  .chip{
+    appearance:none;border:1.5px solid #CBD3E1;background:#fff;border-radius:9px;
+    font:inherit;font-size:15px;font-weight:800;color:#3E4859;
+    padding:11px 12px;min-height:48px;cursor:pointer;line-height:1.2;
+  }
+  .chip:hover{border-color:#C39418;color:var(--navy);background:#FFFCF4}
+
+  input[type="range"]{
+    -webkit-appearance:none;appearance:none;width:100%;height:44px;background:transparent;
+    margin:6px 0 0;display:block;cursor:pointer;
+    /* 가로 드래그는 슬라이더가, 세로는 페이지 스크롤이 맡도록 (iOS 터치 대응) */
+    touch-action:pan-y;-webkit-user-select:none;user-select:none;
+  }
+  input[type="range"]::-webkit-slider-runnable-track{height:8px;border-radius:999px;background:#DCE2EC}
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;
+    background:var(--white);border:4px solid #C39418;box-shadow:0 2px 6px rgba(14,29,52,.28);margin-top:-10px;
+  }
+  input[type="range"]::-moz-range-track{height:8px;border-radius:999px;background:#DCE2EC}
+  input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid #C39418}
+  .range-scale{display:flex;justify-content:space-between;font-size:13.5px;font-weight:600;color:#4F586C;margin-top:2px}
+  .range-note{display:block;margin:8px 0 0;font-size:13.5px;font-weight:700;color:#8A5F0A;line-height:1.55}
+  .range-note[hidden]{display:none}
+
+  select{
+    appearance:none;-webkit-appearance:none;width:100%;font:inherit;font-weight:800;font-size:17px;color:var(--navy);
+    background:#FBFCFE url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%234F586C' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 15px center/13px 9px;
+    border:1.5px solid #C9D1E0;border-radius:12px;padding:15px 42px 15px 14px;min-height:56px;
+  }
+
+  .segmented{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#E9EDF4;padding:5px;border-radius:13px}
+  .segmented label{position:relative;display:block}
+  .segmented input{position:absolute;opacity:0;width:1px;height:1px}
+  .segmented span{
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-size:16px;font-weight:800;color:#414B60;line-height:1.35;
+    min-height:52px;padding:10px 6px;border-radius:10px;cursor:pointer;
+  }
+  .segmented input:checked + span{background:#fff;color:var(--navy);box-shadow:0 1px 3px rgba(14,29,52,.16)}
+  .segmented input:focus-visible + span{outline:2px solid #C39418;outline-offset:2px}
+
+  .radio-cards{display:grid;gap:10px}
+  .radio-card{position:relative;display:block}
+  .radio-card input{position:absolute;opacity:0;width:1px;height:1px}
+  .radio-card .body{
+    display:block;border:1.5px solid #CDD5E3;border-radius:13px;padding:15px 16px 15px 46px;
+    cursor:pointer;background:#FBFCFE;position:relative;
+  }
+  .radio-card .body::before{
+    content:"";position:absolute;left:15px;top:18px;width:19px;height:19px;border-radius:50%;
+    border:2px solid #A7B1C4;background:#fff;
+  }
+  .radio-card input:checked + .body{border-color:#C39418;background:var(--gold-soft)}
+  .radio-card input:checked + .body::before{border-color:#A8760F;box-shadow:inset 0 0 0 4px #A8760F}
+  .radio-card input:focus-visible + .body{outline:2px solid #C39418;outline-offset:2px}
+  .radio-card .t{display:block;font-size:17px;font-weight:800;color:var(--navy);line-height:1.4}
+  .radio-card .d{display:block;font-size:14.5px;color:#525C70;margin-top:4px;line-height:1.6}
+
+  .check{display:flex;align-items:flex-start;gap:11px;margin-top:14px}
+  .check input{width:22px;height:22px;margin:2px 0 0;accent-color:#A8760F;flex:0 0 auto}
+  .check label{font-size:15px;color:#39445A;line-height:1.65}
+  .check label b{color:var(--navy)}
+
+  /* ---------- results ---------- */
+  .results-head{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    margin:26px 0 12px;padding:0 2px;
+  }
+  .results-head h2{margin:0;font-size:15px;font-weight:800;color:#4F586C;letter-spacing:.08em}
+
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+  @media (max-width:620px){.result-grid{grid-template-columns:1fr}}
+
+  .result-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin:0}
+  .result-card.is-corp{border-color:#E4D6B2;background:linear-gradient(180deg,#FFFDF7 0%,#fff 55%)}
+  .result-card .r-title{display:flex;align-items:center;flex-wrap:wrap;gap:7px;font-size:19px;font-weight:800;color:var(--navy);margin-bottom:3px;line-height:1.4}
+  .result-card .r-title .badge{
+    font-size:13px;font-weight:800;color:#5E4713;background:#F7E7BF;
+    border-radius:7px;padding:3px 8px;letter-spacing:.01em;line-height:1.4;
+  }
+  .result-card .r-sub{font-size:14.5px;color:#525C70;margin-bottom:14px;line-height:1.55}
+  .row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:7px 0;font-size:16.5px;color:#3E4859}
+  .row > span{min-width:0;line-height:1.5}
+  .row > b{font-weight:800;color:#1A2333;white-space:nowrap;font-variant-numeric:tabular-nums;font-size:17px}
+  .row.total{border-top:2px solid #E2E7F0;margin-top:9px;padding-top:12px;font-size:17px;color:var(--navy);font-weight:800}
+  .row.total > b{color:var(--navy);font-weight:800;font-size:22px;letter-spacing:-.01em}
+  .row.muted > span,.row.muted > b{color:#525C70;font-weight:700}
+  .row.warn > b{color:#A8431B}
+
+  .diff-card{
+    background:var(--navy);color:#fff;border:0;border-radius:var(--radius);
+    padding:22px;box-shadow:0 10px 26px rgba(14,29,52,.22);margin-bottom:16px;
+  }
+  .diff-card .k{font-size:14px;font-weight:800;color:var(--gold);letter-spacing:.09em}
+  .diff-card .v{
+    font-size:clamp(28px,7.4vw,34px);font-weight:800;letter-spacing:-.025em;margin:8px 0 4px;
+    line-height:1.24;font-variant-numeric:tabular-nums;
+  }
+  .diff-card .v small{font-size:.54em;font-weight:700;color:#CFD9E8;margin-left:5px}
+  .diff-card p{margin:8px 0 0;font-size:16.5px;color:#E1E8F3;line-height:1.7}
+  .diff-card p .hl{color:#F2CD72;font-weight:800}
+  .diff-card .split{
+    display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px;padding-top:14px;
+    border-top:1px solid rgba(255,255,255,.18);font-size:14.5px;color:#BDCAE0;line-height:1.6;
+  }
+  .diff-card .split b{color:#fff;font-weight:800}
+
+  .alert{
+    display:flex;gap:10px;background:#FFF6EC;border:1.5px solid #EFD3B6;color:#6E4413;
+    border-radius:12px;padding:14px 15px;font-size:15px;line-height:1.65;margin-bottom:14px;
+  }
+  .alert b{color:#5E3810}
+
+  /* ---------- CTA ---------- */
+  .cta{margin:4px 0 0}
+  .cta .cta-lead{font-size:14.5px;color:#525C70;text-align:center;margin:0 0 12px;line-height:1.6}
+  .cta a.btn{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    min-height:60px;text-decoration:none;border-radius:14px;padding:16px 14px;
+    font-size:17.5px;font-weight:800;letter-spacing:-.01em;line-height:1.4;text-align:center;
+  }
+  .cta a.btn + a.btn{margin-top:10px}
+  .cta a.primary{background:var(--navy);color:#fff;box-shadow:0 6px 18px rgba(14,29,52,.2)}
+  .cta a.primary:hover{background:#16294A}
+  .cta a.secondary{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+
+  /* ---------- notes ---------- */
+  details.notes{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:0;overflow:hidden;margin-bottom:16px}
+  details.notes summary{
+    cursor:pointer;list-style:none;padding:18px 20px;font-size:16.5px;font-weight:800;color:#2A3446;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;line-height:1.45;min-height:60px;
+  }
+  details.notes summary::-webkit-details-marker{display:none}
+  details.notes summary::after{content:"＋";color:#A8760F;font-weight:800;font-size:20px;line-height:1}
+  details.notes[open] summary::after{content:"−"}
+  details.notes ul{margin:0;padding:0 20px 20px 38px;font-size:15px;color:#414B60;line-height:1.85}
+  details.notes li{margin-bottom:7px}
+
+  .disclaimer{
+    background:#fff;border:1.5px dashed #C6CFDD;border-radius:14px;padding:18px 18px;margin-top:8px;
+    font-size:14.5px;color:#414B60;line-height:1.85;
+  }
+  .disclaimer b{color:#1E2839}
+
+  .site-footer{
+    background:var(--navy);color:#C9D4E4;margin-top:24px;padding:26px 18px 34px;font-size:15px;line-height:1.9;
+  }
+  .site-footer .inner{max-width:760px;margin:0 auto}
+  .site-footer .f-name{color:#fff;font-weight:800;font-size:19px;margin-bottom:4px;line-height:1.4}
+  .site-footer a{color:#F2CD72;text-decoration:none;font-weight:800}
+  .site-footer .f-line{color:#B4C1D6}
+  .site-footer .f-copy{margin-top:14px;font-size:14px;color:#A5B4CB;line-height:1.8}
+
+  .nowrap,.t-keep{white-space:nowrap}
+  .result-note{margin:0 2px 14px;font-size:13px;color:#5A6478;line-height:1.6}
+  .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  :focus-visible{outline:3px solid #C39418;outline-offset:2px}
+  @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">드림</div>
+      <div>
+        <div class="name">드림 종합법률세무사무소</div>
+        <div class="sub">변호사 김치현</div>
+      </div>
+    </div>
+    <a class="head-tel" href="tel:02-6956-8141">02-6956-8141</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <h1>드림 <span class="accent">세무계산기</span></h1>
+    <p>개인사업자와 1인 법인의 세금·건강보험료를 같은 조건에서 비교하고, 법인설립 때 드는 공과금을 미리 확인해 보세요.</p>
+    <p class="meta">2026년 세법 기준 · 입력한 금액은 서버로 전송되지 않고 이 화면 안에서만 계산됩니다.</p>
+  </section>
+
+  <div class="tabs" role="tablist" aria-label="계산기 선택">
+    <button class="tab" id="tab-1" role="tab" aria-selected="true" aria-controls="panel-1" data-tab="1">
+      <span class="t-num">TAB 1</span>개인사업자 vs <span class="t-keep">1인 법인</span>
+    </button>
+    <button class="tab" id="tab-2" role="tab" aria-selected="false" aria-controls="panel-2" data-tab="2">
+      <span class="t-num">TAB 2</span><span class="t-keep">법인설립 공과금</span>
+    </button>
+  </div>
+
+  <!-- ================= TAB 1 ================= -->
+  <section id="panel-1" role="tabpanel" aria-labelledby="tab-1">
+
+    <div class="card">
+      <h2><span class="dot" aria-hidden="true"></span>조건 입력</h2>
+      <p class="lead">연간 순이익과 대표자 급여만 넣으면 두 방식의 연간 부담을 나란히 보여 드립니다.</p>
+
+      <div class="field">
+        <div class="field-head">
+          <label for="profitInput">연간 순이익</label>
+          <span class="hint">개인사업자는 사업소득,<br>법인은 급여 지급 전 이익</span>
+        </div>
+        <div class="input-line">
+          <div class="box">
+            <input type="text" id="profitInput" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" value="10,000" aria-describedby="profitHelp">
+            <span class="unit">만원</span>
+          </div>
+          <div class="chips">
+            <button type="button" class="chip" data-profit="5000">5천만</button>
+            <button type="button" class="chip" data-profit="10000">1억</button>
+            <button type="button" class="chip" data-profit="20000">2억</button>
+            <button type="button" class="chip" data-profit="30000">3억</button>
+          </div>
+        </div>
+        <input type="range" id="profitRange" min="5000" max="30000" step="100" value="10000" aria-label="연간 순이익 슬라이더(만원)">
+        <div class="range-scale"><span>5,000만</span><span>3억</span></div>
+        <p class="range-note" id="profitRangeNote" hidden></p>
+        <p class="desc" id="profitHelp">슬라이더 범위를 넘는 금액은 위 칸에 직접 입력하시면 됩니다. (예: 1억 원 = 10,000)</p>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <label for="payInput">대표자 월 급여</label>
+          <span class="hint">법인 전환 시 대표에게<br>지급하는 월 보수</span>
+        </div>
+        <div class="input-line">
+          <div class="box">
+            <input type="text" id="payInput" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" value="300">
+            <span class="unit">만원</span>
+          </div>
+        </div>
+        <input type="range" id="payRange" min="0" max="1000" step="10" value="300" aria-label="대표자 월 급여 슬라이더(만원)">
+        <div class="range-scale"><span>0</span><span>500만</span><span>1,000만</span></div>
+        <p class="range-note" id="payRangeNote" hidden></p>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <label for="familySelect">부양가족 수 (본인 포함)</label>
+        </div>
+        <select id="familySelect">
+          <option value="1" selected>1명 (본인만)</option>
+          <option value="2">2명</option>
+          <option value="3">3명</option>
+          <option value="4">4명</option>
+          <option value="5">5명</option>
+          <option value="6">6명</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <label>법인에 남는 이익 처리</label>
+          <span class="hint">비교 기준</span>
+        </div>
+        <div class="segmented" role="radiogroup" aria-label="법인 이익 처리 방법">
+          <label><input type="radio" name="withdraw" value="retain" checked><span>법인에 유보</span></label>
+          <label><input type="radio" name="withdraw" value="dividend"><span>배당으로 인출</span></label>
+        </div>
+        <p class="desc">유보는 법인 통장에 남기는 경우, 배당 인출은 주주 배당으로 꺼내는 경우(15.4% 가정)입니다.</p>
+      </div>
+    </div>
+
+    <div class="results-head"><h2>계산 결과</h2></div>
+    <div id="warnBox"></div>
+    <div class="result-grid">
+      <article class="result-card" id="cardIndividual"></article>
+      <article class="result-card is-corp" id="cardCorp"></article>
+    </div>
+
+    <div class="diff-card" id="diffCard"></div>
+    <p class="result-note">본 계산기는 2026년 기준 모의 계산이며, 공제·감면 항목에 따라 실제 세액이 달라질 수 있습니다.</p>
+
+    <div class="cta">
+      <p class="cta-lead">내 상황에 맞는 판단은 상담에서 확인하실 수 있습니다.</p>
+      <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">👉 드림 종합법률세무사무소 상담 신청</a>
+      <a class="btn secondary" href="tel:02-6956-8141">📞 전화 상담 (02-6956-8141)</a>
+    </div>
+
+    <details class="notes">
+      <summary>계산에 반영한 기준과 가정</summary>
+      <ul>
+        <li>종합소득세는 2026년 기준 기본세율(과세표준 1,400만 원 이하 6% ~ 10억 원 초과 45%, 8단계)을 적용하고, 지방소득세 10%를 더했습니다.</li>
+        <li>법인세는 2026년 1월 1일 이후 개시 사업연도 기준(과세표준 2억 원 이하 10%, 2억 원 초과 20%)에 지방소득세 10%를 더했습니다.</li>
+        <li>건강보험료율 7.19%, 장기요양보험료율 0.9448%(건강보험료의 13.14%)를 적용했습니다. 직장가입자는 본인과 회사가 각 50%씩 부담합니다.</li>
+        <li>개인사업자는 지역가입자 소득분 보험료(소득월액 × 7.19%)만 반영했습니다. 재산 보험료는 넣지 않았으므로 실제 보험료는 이보다 높을 수 있습니다.</li>
+        <li>개인사업자의 소득공제는 기본공제(1인 150만 원)만 반영했습니다. 노란우산공제·연금계좌·신용카드 등 다른 공제는 반영되지 않았습니다.</li>
+        <li>법인 대표 급여는 근로소득으로 보아 근로소득공제, 기본공제, 건강보험료 소득공제, 근로소득세액공제를 반영했습니다.</li>
+        <li>국민연금은 세액·보험료 비교에서 제외했습니다.</li>
+        <li>법인의 기장료, 설립비용, 신고 비용 등 부대비용은 반영하지 않았습니다.</li>
+        <li>배당 인출은 배당소득세 15.4%를 적용했습니다. 금융소득이 연 2,000만 원을 넘어 종합과세되면 세액이 달라질 수 있습니다.</li>
+        <li>대표 급여가 연간 순이익보다 크면 순이익 전액을 급여로 지급하는 것으로 조정해 계산합니다.</li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- ================= TAB 2 ================= -->
+  <section id="panel-2" role="tabpanel" aria-labelledby="tab-2" hidden>
+
+    <div class="card">
+      <h2><span class="dot" aria-hidden="true"></span>설립 조건 입력</h2>
+      <p class="lead">자본금과 본점 소재지, 등기 신청 방식만 고르면 공과금이 바로 나옵니다.</p>
+
+      <div class="field">
+        <div class="field-head">
+          <label for="capitalInput">자본금</label>
+          <span class="hint">등기부에 올리는<br>자본금의 액</span>
+        </div>
+        <div class="input-line">
+          <div class="box">
+            <input type="text" id="capitalInput" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" value="1,000">
+            <span class="unit">만원</span>
+          </div>
+          <div class="chips">
+            <button type="button" class="chip" data-capital="100">100만</button>
+            <button type="button" class="chip" data-capital="1000">1천만</button>
+            <button type="button" class="chip" data-capital="5000">5천만</button>
+            <button type="button" class="chip" data-capital="10000">1억</button>
+          </div>
+        </div>
+        <input type="range" id="capitalRange" min="100" max="10000" step="100" value="1000" aria-label="자본금 슬라이더(만원)">
+        <div class="range-scale"><span>100만</span><span>5,000만</span><span>1억</span></div>
+        <p class="range-note" id="capitalRangeNote" hidden></p>
+      </div>
+
+      <div class="field">
+        <div class="field-head"><label>본점 소재지</label></div>
+        <div class="radio-cards" role="radiogroup" aria-label="본점 소재지 구분">
+          <label class="radio-card">
+            <input type="radio" name="region" value="over" checked>
+            <span class="body">
+              <span class="t">수도권 과밀억제권역</span>
+              <span class="d">서울 전역, 인천 대부분, 수원·성남·고양·부천·안양 등 경기 일부 — 등록면허세 3배 중과</span>
+            </span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="region" value="normal">
+            <span class="body">
+              <span class="t">과밀억제권역 외 지역</span>
+              <span class="d">그 밖의 수도권과 지방 — 기본 세율(0.4%) 적용</span>
+            </span>
+          </label>
+        </div>
+        <div class="check" id="excludeWrap">
+          <input type="checkbox" id="excludeCheck">
+          <label for="excludeCheck"><b>중과 제외 업종</b>에 해당합니다 (소프트웨어·전기통신·의료업 등). 과밀억제권역에서도 기본 세율이 적용됩니다.</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-head"><label>등기 신청 방식</label></div>
+        <div class="segmented" role="radiogroup" aria-label="등기 신청 방식">
+          <label><input type="radio" name="filing" value="electronic" checked><span>전자신청 (2만 원)</span></label>
+          <label><input type="radio" name="filing" value="visit"><span>방문 서면 (3만 5천 원)</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-head"><h2>계산 결과</h2></div>
+    <div id="warnBox2"></div>
+    <article class="result-card" id="cardRegistration"></article>
+    <div class="diff-card" id="regSummary"></div>
+    <p class="result-note">본 계산기는 2026년 기준 모의 계산이며, 공제·감면 항목에 따라 실제 세액이 달라질 수 있습니다.</p>
+
+    <div class="cta">
+      <p class="cta-lead">설립 절차와 서류는 상담에서 함께 확인해 드립니다.</p>
+      <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">👉 드림 종합법률세무사무소 상담 신청</a>
+      <a class="btn secondary" href="tel:02-6956-8141">📞 전화 상담 (02-6956-8141)</a>
+    </div>
+
+    <details class="notes">
+      <summary>계산에 반영한 기준과 가정</summary>
+      <ul>
+        <li>등록면허세는 자본금의 0.4%에 최소 세액 112,500원을 적용합니다(지방세법 제28조). 과밀억제권역 설립은 3배인 1.2%, 최소 세액 337,500원입니다.</li>
+        <li>지방교육세는 등록면허세의 20%를 더합니다(지방세법 제151조).</li>
+        <li>등기신청수수료는 전자신청 20,000원, 방문 서면신청 35,000원입니다(등기사항증명서 등 수수료규칙).</li>
+        <li>인지세는 자본금 1억 원 초과 시 15만 원(10억 원 이하)으로 참고 반영했습니다. 주권 발행과 전자등기 방식에 따라 달라질 수 있습니다.</li>
+        <li>법무사 보수, 정관 공증료, 잔액증명 수수료, 인감·도장 비용은 공과금에 포함되지 않아 제외했습니다.</li>
+        <li>자본금이 2,812만 5,000원 이하이면 최소 세액이 적용되어 자본금을 낮춰도 세액이 줄지 않습니다.</li>
+        <li>본점 주소지만 과밀억제권역 밖에 두고 실제 사업장을 권역 안에 두면 추가로 중과세될 수 있습니다.</li>
+        <li>설립 후 부가가치세 신고에서 매입세액 공제 여부는 거래 건별로 확인이 필요합니다.</li>
+      </ul>
+    </details>
+  </section>
+
+  <p class="disclaimer">
+    <b>안내.</b> 본 계산기는 2026년 기준 모의 계산이며, 공제·감면 항목에 따라 실제 세액이 달라질 수 있습니다.
+    계산 결과는 참고용이며 세무·법률 자문을 대신하지 않습니다.
+  </p>
+</main>
+
+<footer class="site-footer">
+  <div class="inner">
+    <div class="f-name">드림 종합법률세무사무소</div>
+    <div>변호사 김치현</div>
+    <div class="f-line">서울특별시 성동구 왕십리로 58, 서울숲포휴 5층 518호</div>
+    <div class="f-line">대표전화 <a href="tel:02-6956-8141">02-6956-8141</a></div>
+    <div class="f-copy">본 계산기는 2026년 기준 모의 계산이며, 공제·감면 항목에 따라 실제 세액이 달라질 수 있습니다.</div>
+  </div>
+</footer>
+
+<!-- ================= 계산 로직 (순수 함수) ================= -->
+<script id="calc-core">
+/* CALC_CORE_START */
+var CALC = (function () {
+  'use strict';
+
+  var RATE = {
+    health: 0.0719,          // 2026년 건강보험료율
+    ltcToHealth: 0.1314,     // 장기요양보험료 / 건강보험료 (0.9448 / 7.19)
+    localIncomeTax: 0.10,    // 지방소득세 = 소득세의 10%
+    dividend: 0.154,         // 배당소득세(지방소득세 포함) 가정
+    basicDeduction: 1500000, // 1인당 기본공제
+    regionalMinMonthly: 20160
+  };
+
+  // 종합소득세 기본세율(2026년)
+  var INCOME_BRACKETS = [
+    { upTo: 14000000,    rate: 0.06, ded: 0 },
+    { upTo: 50000000,    rate: 0.15, ded: 1260000 },
+    { upTo: 88000000,    rate: 0.24, ded: 5760000 },
+    { upTo: 150000000,   rate: 0.35, ded: 15440000 },
+    { upTo: 300000000,   rate: 0.38, ded: 19940000 },
+    { upTo: 500000000,   rate: 0.40, ded: 25940000 },
+    { upTo: 1000000000,  rate: 0.42, ded: 35940000 },
+    { upTo: Infinity,    rate: 0.45, ded: 65940000 }
+  ];
+
+  var REG = {
+    rate: 0.004,
+    rateOverpop: 0.012,
+    minTax: 112500,
+    minTaxOverpop: 337500,
+    eduRate: 0.20,
+    feeElectronic: 20000,
+    feeVisit: 35000,
+    stampThreshold: 100000000,   // 1억 원 초과
+    stampHighThreshold: 10000000000,
+    stamp: 150000,
+    stampHigh: 350000
+  };
+
+  function safe(n) {
+    n = Number(n);
+    return isFinite(n) && n > 0 ? n : 0;
+  }
+
+  function progressiveTax(base) {
+    base = safe(base);
+    if (base <= 0) return 0;
+    for (var i = 0; i < INCOME_BRACKETS.length; i++) {
+      var b = INCOME_BRACKETS[i];
+      if (base <= b.upTo) return Math.max(0, base * b.rate - b.ded);
+    }
+    return 0;
+  }
+
+  function corporateTax(base) {
+    base = safe(base);
+    if (base <= 0) return 0;
+    return base <= 200000000 ? base * 0.10 : base * 0.20 - 20000000;
+  }
+
+  function laborIncomeDeduction(gross) {
+    gross = safe(gross);
+    var d;
+    if (gross <= 0) return 0;
+    if (gross <= 5000000) d = gross * 0.70;
+    else if (gross <= 15000000) d = 3500000 + (gross - 5000000) * 0.40;
+    else if (gross <= 45000000) d = 7500000 + (gross - 15000000) * 0.15;
+    else if (gross <= 100000000) d = 12000000 + (gross - 45000000) * 0.05;
+    else d = 14750000 + (gross - 100000000) * 0.02;
+    return Math.min(d, 20000000, gross);
+  }
+
+  function laborTaxCreditLimit(gross) {
+    gross = safe(gross);
+    if (gross <= 33000000) return 740000;
+    if (gross <= 70000000) return Math.max(660000, 740000 - (gross - 33000000) * 0.008);
+    if (gross <= 120000000) return Math.max(500000, 660000 - (gross - 70000000) * 0.5);
+    return Math.max(200000, 500000 - (gross - 120000000) * 0.5);
+  }
+
+  function laborTaxCredit(calcTax, gross) {
+    calcTax = safe(calcTax);
+    if (calcTax <= 0) return 0;
+    var credit = calcTax <= 1300000 ? calcTax * 0.55 : 715000 + (calcTax - 1300000) * 0.30;
+    return Math.min(credit, laborTaxCreditLimit(gross));
+  }
+
+  function floor10(n) { return Math.floor(n / 10) * 10; }
+
+  // 직장가입자: 보수월액 기준, 본인·회사 각 50%
+  function healthEmployee(monthlyPay) {
+    monthlyPay = safe(monthlyPay);
+    // 건강보험공단 방식: 본인·회사가 각각 절반을 10원 단위로 절사해 부담한다.
+    var empHealth = floor10(monthlyPay * RATE.health / 2);
+    var empLtc = floor10(empHealth * RATE.ltcToHealth);
+    var employee = empHealth + empLtc;
+    return {
+      healthTotal: empHealth * 2,
+      ltcTotal: empLtc * 2,
+      total: employee * 2,
+      employee: employee,
+      employer: employee
+    };
+  }
+
+  // 지역가입자: 소득분만(재산분 제외)
+  function healthRegional(annualIncome) {
+    annualIncome = safe(annualIncome);
+    var monthlyIncome = annualIncome / 12;
+    var monthlyHealth = Math.max(RATE.regionalMinMonthly, floor10(monthlyIncome * RATE.health));
+    var monthlyLtc = floor10(monthlyHealth * RATE.ltcToHealth);
+    var monthly = monthlyHealth + monthlyLtc;
+    return {
+      monthlyHealth: monthlyHealth,
+      monthlyLtc: monthlyLtc,
+      monthly: monthly,
+      annual: monthly * 12
+    };
+  }
+
+  function calcIndividual(netProfit, dependents) {
+    netProfit = safe(netProfit);
+    dependents = Math.max(1, Math.round(safe(dependents) || 1));
+    var basic = RATE.basicDeduction * dependents;
+    var taxBase = Math.max(0, netProfit - basic);
+    var incomeTax = progressiveTax(taxBase);
+    var localTax = incomeTax * RATE.localIncomeTax;
+    var health = healthRegional(netProfit);
+    return {
+      netProfit: netProfit,
+      basic: basic,
+      taxBase: taxBase,
+      incomeTax: incomeTax,
+      localTax: localTax,
+      health: health,
+      total: incomeTax + localTax + health.annual
+    };
+  }
+
+  function calcCorporation(netProfit, monthlyPay, dependents, withdrawal) {
+    netProfit = safe(netProfit);
+    dependents = Math.max(1, Math.round(safe(dependents) || 1));
+    var annualPay = safe(monthlyPay) * 12;
+    var payAdjusted = false;
+    if (annualPay > netProfit) {
+      annualPay = netProfit;
+      payAdjusted = true;
+    }
+
+    var emp = healthEmployee(annualPay / 12);
+    var employerHealthYear = emp.employer * 12;
+
+    var corpBase = Math.max(0, netProfit - annualPay - employerHealthYear);
+    var corpTax = corporateTax(corpBase);
+    var corpLocal = corpTax * RATE.localIncomeTax;
+    var retained = Math.max(0, corpBase - corpTax - corpLocal);
+
+    var gross = annualPay;
+    var laborIncome = Math.max(0, gross - laborIncomeDeduction(gross));
+    var employeeHealthYear = emp.employee * 12;
+    var laborDeduction = RATE.basicDeduction * dependents + employeeHealthYear;
+    var laborBase = Math.max(0, laborIncome - laborDeduction);
+    var laborCalcTax = progressiveTax(laborBase);
+    var credit = laborTaxCredit(laborCalcTax, gross);
+    var laborTax = Math.max(0, laborCalcTax - credit);
+    var laborLocal = laborTax * RATE.localIncomeTax;
+
+    var dividendTax = (withdrawal === 'dividend') ? retained * RATE.dividend : 0;
+    var healthYear = emp.total * 12;
+
+    return {
+      netProfit: netProfit,
+      annualPay: annualPay,
+      payAdjusted: payAdjusted,
+      emp: emp,
+      employerHealthYear: employerHealthYear,
+      employeeHealthYear: employeeHealthYear,
+      corpBase: corpBase,
+      corpTax: corpTax,
+      corpLocal: corpLocal,
+      retained: retained,
+      gross: gross,
+      laborIncome: laborIncome,
+      laborDeduction: laborDeduction,
+      laborBase: laborBase,
+      laborCalcTax: laborCalcTax,
+      credit: credit,
+      laborTax: laborTax,
+      laborLocal: laborLocal,
+      dividendTax: dividendTax,
+      healthYear: healthYear,
+      total: corpTax + corpLocal + laborTax + laborLocal + healthYear + dividendTax
+    };
+  }
+
+  function calcRegistration(capital, opts) {
+    opts = opts || {};
+    capital = safe(capital);
+    var overpop = !!opts.overpop && !opts.excludedIndustry;
+    var multiplier = overpop ? 3 : 1;
+    var rate = overpop ? REG.rateOverpop : REG.rate;
+    var minTax = overpop ? REG.minTaxOverpop : REG.minTax;
+
+    var taxRate = Math.floor(capital * rate);
+    var regTax = Math.max(minTax, taxRate);
+    var eduTax = Math.floor(regTax * REG.eduRate);
+    var fee = opts.eFiling === false ? REG.feeVisit : REG.feeElectronic;
+
+    var stamp = 0;
+    if (capital > REG.stampThreshold) {
+      stamp = capital > REG.stampHighThreshold ? REG.stampHigh : REG.stamp;
+    }
+
+    return {
+      capital: capital,
+      overpop: overpop,
+      multiplier: multiplier,
+      rate: rate,
+      minTax: minTax,
+      regTax: regTax,
+      eduTax: eduTax,
+      fee: fee,
+      stamp: stamp,
+      total: regTax + eduTax + fee + stamp,
+      minApplied: taxRate < minTax
+    };
+  }
+
+  return {
+    RATE: RATE,
+    REG: REG,
+    progressiveTax: progressiveTax,
+    corporateTax: corporateTax,
+    laborIncomeDeduction: laborIncomeDeduction,
+    laborTaxCreditLimit: laborTaxCreditLimit,
+    laborTaxCredit: laborTaxCredit,
+    healthEmployee: healthEmployee,
+    healthRegional: healthRegional,
+    calcIndividual: calcIndividual,
+    calcCorporation: calcCorporation,
+    calcRegistration: calcRegistration
+  };
+})();
+/* CALC_CORE_END */
+</script>
+
+<!-- ================= 화면 연결 ================= -->
+<script>
+(function () {
+  'use strict';
+
+  function $(sel) { return document.querySelector(sel); }
+  var won = function (n) {
+    n = Math.round(Number(n) || 0);
+    return n.toLocaleString('ko-KR') + '원';
+  };
+  function compact(n) {
+    n = Math.round(Number(n) || 0);
+    var eok = Math.floor(n / 100000000);
+    var man = Math.round((n % 100000000) / 10000);
+    var out = '';
+    if (eok > 0) out += eok.toLocaleString('ko-KR') + '억 ';
+    if (man > 0 || eok === 0) out += man.toLocaleString('ko-KR') + '만 ';
+    return out + '원';
+  }
+  function rows(items) {
+    return items.map(function (r) {
+      return '<div class="row' + (r.cls ? ' ' + r.cls : '') + '"><span>' + r.k + '</span><b>' + r.v + '</b></div>';
+    }).join('');
+  }
+
+  /* ---------------- tabs ---------------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var panels = { '1': $('#panel-1'), '2': $('#panel-2') };
+  function selectTab(id) {
+    tabs.forEach(function (t) {
+      var on = t.getAttribute('data-tab') === id;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    Object.keys(panels).forEach(function (k) {
+      panels[k].hidden = (k !== id);
+    });
+  }
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () { selectTab(t.getAttribute('data-tab')); });
+  });
+
+  /* ---------------- tab 1 ---------------- */
+  var profitInput = $('#profitInput');
+  var profitRange = $('#profitRange');
+  var payInput = $('#payInput');
+  var payRange = $('#payRange');
+  var familySelect = $('#familySelect');
+  var warnBox = $('#warnBox');
+  var cardIndividual = $('#cardIndividual');
+  var cardCorp = $('#cardCorp');
+  var diffCard = $('#diffCard');
+
+  function withdrawalValue() {
+    var el = document.querySelector('input[name="withdraw"]:checked');
+    return el ? el.value : 'retain';
+  }
+
+  /* ---------- 금액 칸 ↔ 슬라이더 양방향 동기화 ---------- */
+  var MAX_DIGITS = 12;
+  var koNum = new Intl.NumberFormat('ko-KR');
+
+  function digitsOf(str) {
+    var d = String(str == null ? '' : str).replace(/[^0-9]/g, '');
+    return d.replace(/^0+(?=\d)/, '').slice(0, MAX_DIGITS);
+  }
+  function formatAmount(v) {
+    return koNum.format(Math.max(0, Math.round(Number(v) || 0)));
+  }
+
+  // 입력 중에 콤마를 넣되 커서 위치는 원래 자리에 남겨 둔다.
+  function formatTyping(el) {
+    var raw = el.value;
+    var caret = raw.length;
+    try { if (el.selectionStart != null) caret = el.selectionStart; } catch (e) {}
+    var digitsBefore = raw.slice(0, caret).replace(/[^0-9]/g, '').length;
+    var digits = digitsOf(raw);
+    var next = digits ? formatAmount(Number(digits)) : '';
+    if (next !== raw) {
+      el.value = next;
+      var pos = 0, seen = 0;
+      while (pos < next.length && seen < digitsBefore) {
+        var c = next.charCodeAt(pos);
+        if (c >= 48 && c <= 57) seen++;
+        pos++;
+      }
+      try { el.setSelectionRange(pos, pos); } catch (e) {}
+    }
+    return digits;
+  }
+
+  function bindAmount(numEl, rangeEl, key) {
+    var rMin = Number(rangeEl.min) || 0;
+    var rMax = Number(rangeEl.max) || 0;
+    var noteEl = document.getElementById(key + 'RangeNote');
+    var api = { value: Number(rangeEl.value) || 0 };
+
+    function paintNote() {
+      if (!noteEl) return;
+      if (api.value < rMin || api.value > rMax) {
+        noteEl.hidden = false;
+        noteEl.textContent = '슬라이더 범위(' + formatAmount(rMin) + '만 ~ ' + formatAmount(rMax) +
+          '만) 밖의 금액입니다. 손잡이는 ' + (api.value > rMax ? '오른쪽' : '왼쪽') +
+          ' 끝에 있고, 계산은 입력한 금액으로 합니다.';
+      } else if (!noteEl.hidden) {
+        noteEl.hidden = true;
+        noteEl.textContent = '';
+      }
+    }
+    function moveThumb() {
+      var v = Math.min(rMax, Math.max(rMin, api.value));
+      if (rangeEl.value !== String(v)) rangeEl.value = String(v);
+    }
+    function afterChange() {
+      paintNote();
+      renderAll();
+    }
+
+    function fromInput() {
+      api.value = Number(digitsOf(numEl.value)) || 0;
+      moveThumb();
+      afterChange();
+    }
+    function fromRange() {
+      var v = Number(rangeEl.value);
+      if (!isFinite(v)) return;
+      var text = formatAmount(v);
+      if (v === api.value && numEl.value === text) return;  // 이미 반영된 값
+      api.value = v;
+      if (numEl.value !== text) numEl.value = text;
+      afterChange();
+    }
+
+    numEl.addEventListener('input', function () { formatTyping(numEl); fromInput(); });
+    numEl.addEventListener('change', function () { formatTyping(numEl); fromInput(); });
+    numEl.addEventListener('keyup', function () { formatTyping(numEl); fromInput(); });
+    numEl.addEventListener('blur', function () {
+      // 비워 둔 칸은 손잡이 위치로 되돌린다.
+      if (!digitsOf(numEl.value)) api.value = Number(rangeEl.value) || rMin;
+      numEl.value = formatAmount(api.value);
+      moveThumb();
+      afterChange();
+    });
+
+    rangeEl.addEventListener('input', fromRange);
+    rangeEl.addEventListener('change', fromRange);
+
+    /* 손가락이 닿아 있는 동안 손잡이 값을 계속 읽어 금액 칸에 반영한다.
+       드래그 중 input 이벤트가 늦게 오거나 오지 않는 웹뷰·브라우저(iOS 등)에서도
+       화면의 금액과 계산 결과가 손잡이를 따라가도록 하는 안전장치. */
+    var raf = null, pressedAt = 0, lastThumb = null;
+    function watch() {
+      raf = null;
+      if (lastThumb !== null && rangeEl.value !== lastThumb) {
+        lastThumb = rangeEl.value;
+        fromRange();
+      }
+      if (pressedAt && Date.now() - pressedAt < 30000) raf = requestAnimationFrame(watch);
+    }
+    function pressStart() {
+      if (raf !== null) return;
+      pressedAt = Date.now();
+      lastThumb = rangeEl.value;
+      raf = requestAnimationFrame(watch);
+    }
+    function pressEnd() {
+      if (raf !== null) { cancelAnimationFrame(raf); raf = null; }
+      if (lastThumb !== null && rangeEl.value !== lastThumb) fromRange();
+      lastThumb = null;
+      pressedAt = 0;
+    }
+    ['pointerdown', 'touchstart', 'mousedown'].forEach(function (ev) {
+      rangeEl.addEventListener(ev, pressStart, { passive: true });
+    });
+    ['pointerup', 'pointercancel', 'touchend', 'touchcancel', 'mouseup', 'blur'].forEach(function (ev) {
+      rangeEl.addEventListener(ev, pressEnd, { passive: true });
+    });
+
+    api.set = function (v) {
+      api.value = Math.max(0, Math.round(Number(v) || 0));
+      numEl.value = formatAmount(api.value);
+      moveThumb();
+      afterChange();
+    };
+    return api;
+  }
+
+  function renderTab1() {
+    var profitMan = profitField.value;
+    var payMan = payField.value;
+    var family = parseInt(familySelect.value, 10) || 1;
+    var withdrawal = withdrawalValue();
+
+    var net = profitMan * 10000;
+    var pay = payMan * 10000;
+
+    var ind = CALC.calcIndividual(net, family);
+    var corp = CALC.calcCorporation(net, pay, family, withdrawal);
+
+    // 개인사업자 카드
+    cardIndividual.innerHTML =
+      '<div class="r-title">개인사업자</div>' +
+      '<div class="r-sub">지역가입자 · 사업소득 기준</div>' +
+      rows([
+        { k: '종합소득세', v: won(ind.incomeTax) },
+        { k: '지방소득세', v: won(ind.localTax) },
+        { k: '건강보험료 (장기요양 포함)', v: won(ind.health.annual) },
+        { k: '연간 부담 합계', v: won(ind.total), cls: 'total' }
+      ]);
+
+    // 1인 법인 카드
+    var corpRows = [
+      { k: '법인세', v: won(corp.corpTax) },
+      { k: '법인 지방소득세', v: won(corp.corpLocal) },
+      { k: '대표 근로소득세', v: won(corp.laborTax) },
+      { k: '근로 지방소득세', v: won(corp.laborLocal) },
+      { k: '건강보험료 (회사+개인)', v: won(corp.healthYear) }
+    ];
+    if (withdrawal === 'dividend') {
+      corpRows.push({ k: '배당소득세', v: won(corp.dividendTax) });
+    }
+    corpRows.push({ k: '연간 부담 합계', v: won(corp.total), cls: 'total' });
+
+    cardCorp.innerHTML =
+      '<div class="r-title">1인 법인 <span class="badge">' + (corp.payAdjusted ? '급여 = 순이익 전액' : '대표 급여 ' + koNum.format(payMan) + '만/월') + '</span></div>' +
+      '<div class="r-sub">법인세 + 대표 근로소득세 기준</div>' +
+      rows(corpRows) +
+      '<div class="row muted" style="margin-top:8px"><span>법인에 남는 이익</span><b>' + won(corp.retained) + '</b></div>';
+
+    // 경고
+    var warn = '';
+    if (corp.payAdjusted) {
+      warn += '<div class="alert"><span aria-hidden="true">⚠</span><span><b>대표 급여가 연간 순이익을 넘습니다.</b> 순이익 전액(월 ' + compact(corp.annualPay / 12).replace(' 원', '') + ')을 급여로 지급하는 것으로 조정해 계산했습니다.</span></div>';
+    }
+    warnBox.innerHTML = warn;
+
+    // 차이
+    var diff = ind.total - corp.total;              // 양수면 법인이 적게 냄
+    var absDiff = Math.abs(diff);
+    var pct = ind.total > 0 ? Math.round((absDiff / ind.total) * 1000) / 10 : 0;
+    var headline, note;
+
+    if (absDiff < 100000) {
+      headline = '큰 차이가 없습니다';
+      note = '이 조건에서는 두 방식의 연간 부담이 <span class="hl">거의 비슷</span>합니다. 법인은 설립비용과 기장료가 따로 들기 때문에 그 부분까지 함께 보셔야 합니다.';
+    } else if (diff > 0) {
+      headline = '약 ' + compact(absDiff) + ' <small>법인이 적음</small>';
+      note = '이 조건에서는 <span class="hl">1인 법인으로 전환할 때</span> 세금과 건강보험료 부담이 연간 약 ' + compact(absDiff) + ' 적을 것으로 보입니다.';
+    } else {
+      headline = '약 ' + compact(absDiff) + ' <small>개인사업자가 적음</small>';
+      note = '이 조건에서는 <span class="hl">개인사업자를 유지하는 편</span>이 세금과 건강보험료 부담이 연간 약 ' + compact(absDiff) + ' 적을 것으로 보입니다.';
+    }
+
+    if (withdrawal === 'retain') {
+      if (corp.retained > 0) {
+        var corpIfDiv = corp.total + corp.retained * CALC.RATE.dividend;
+        var diffIfDiv = ind.total - corpIfDiv;
+        note += ' 법인에 남는 이익 ' + won(corp.retained) + '은 세금을 낸 뒤 법인 통장에 남는 돈이며, 이를 배당으로 전액 꺼내면 배당소득세가 더해집니다.';
+        if (diffIfDiv > 0) {
+          note += ' 배당 인출까지 합친 부담은 ' + won(corpIfDiv) + '으로, 그래도 개인사업자보다 약 ' + compact(diffIfDiv) + ' 적습니다.';
+        } else if (diffIfDiv < 0) {
+          note += ' 배당 인출까지 합치면 ' + won(corpIfDiv) + '으로, 개인사업자보다 약 ' + compact(-diffIfDiv) + ' 많아집니다.';
+        } else {
+          note += ' 배당 인출까지 합치면 ' + won(corpIfDiv) + '으로 개인사업자와 비슷해집니다.';
+        }
+      } else {
+        note += ' 대표 급여가 순이익 전액으로 잡혀 법인에 남는 이익은 없습니다.';
+      }
+    } else {
+      note += ' 법인 이익을 배당으로 전액 인출하는 조건(배당소득세 15.4%)으로 계산했습니다.';
+    }
+
+    var extraSplit = '';
+    if (withdrawal === 'retain' && corp.retained > 0) {
+      var corpIfDividend = corp.total + corp.retained * CALC.RATE.dividend;
+      extraSplit = '<span>배당으로 인출 시 법인 <b>' + won(corpIfDividend) + '</b></span>';
+    }
+
+    diffCard.innerHTML =
+      '<div class="k">연간 부담 차이</div>' +
+      '<div class="v">' + headline + '</div>' +
+      '<p>' + note + '</p>' +
+      '<div class="split">' +
+        '<span>개인사업자 <b>' + won(ind.total) + '</b></span>' +
+        '<span>1인 법인 <b>' + won(corp.total) + '</b></span>' +
+        '<span>차이 비율 <b>약 ' + pct + '%</b></span>' +
+        extraSplit +
+      '</div>';
+  }
+
+  var profitField = bindAmount(profitInput, profitRange, 'profit');
+  var payField = bindAmount(payInput, payRange, 'pay');
+
+  familySelect.addEventListener('change', renderAll);
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="withdraw"]'), function (el) {
+    el.addEventListener('change', renderAll);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-profit]'), function (btn) {
+    btn.addEventListener('click', function () {
+      profitField.set(Number(btn.getAttribute('data-profit')));
+    });
+  });
+
+  /* ---------------- tab 2 ---------------- */
+  var capitalInput = $('#capitalInput');
+  var capitalRange = $('#capitalRange');
+  var excludeWrap = $('#excludeWrap');
+  var excludeCheck = $('#excludeCheck');
+  var warnBox2 = $('#warnBox2');
+  var cardRegistration = $('#cardRegistration');
+  var regSummary = $('#regSummary');
+
+  function regionValue() {
+    var el = document.querySelector('input[name="region"]:checked');
+    return el ? el.value : 'over';
+  }
+  function filingValue() {
+    var el = document.querySelector('input[name="filing"]:checked');
+    return el ? el.value : 'electronic';
+  }
+
+  function renderTab2() {
+    var capMan = capitalField.value;
+    var capital = capMan * 10000;
+    var region = regionValue();
+    var overpop = region === 'over';
+    var excluded = excludeCheck.checked;
+    var eFiling = filingValue() === 'electronic';
+
+    excludeWrap.style.display = overpop ? '' : 'none';
+    if (!overpop) excludeCheck.checked = false;
+
+    var r = CALC.calcRegistration(capital, {
+      overpop: overpop,
+      excludedIndustry: excluded,
+      eFiling: eFiling
+    });
+
+    var regionLabel = r.overpop ? '과밀억제권역 · 3배 중과' : (overpop ? '과밀억제권역 · 중과 제외 업종' : '과밀억제권역 외');
+    var rowsHtml = [
+      { k: '등록면허세 (' + (r.multiplier === 3 ? '1.2%' : '0.4%') + ')', v: won(r.regTax) },
+      { k: '지방교육세 (등록면허세의 20%)', v: won(r.eduTax) },
+      { k: '등기신청수수료', v: won(r.fee) }
+    ];
+    if (r.stamp > 0) {
+      rowsHtml.push({ k: '인지세 (자본금 1억 원 초과)', v: won(r.stamp) });
+    }
+    rowsHtml.push({ k: '공과금 합계', v: won(r.total), cls: 'total' });
+
+    cardRegistration.innerHTML =
+      '<div class="r-title">법인설립 공과금 <span class="badge">' + regionLabel + '</span></div>' +
+      '<div class="r-sub">자본금 ' + compact(capital) + ' 기준 · 세금과 등기수수료만 반영</div>' +
+      rows(rowsHtml);
+
+    var note;
+    if (r.minApplied) {
+      note = '자본금 ' + compact(capital) + '은 <span class="nowrap">최소 세액 구간(자본금 ' + compact(r.minTax / r.rate) + ' 이하)</span>에 해당해, 등록면허세가 최소 세액 ' + won(r.minTax) + '으로 계산되었습니다.';
+    } else {
+      note = '등록면허세는 자본금 ' + compact(capital) + '의 ' + (r.multiplier === 3 ? '1.2%' : '0.4%') + '로 계산되었습니다.';
+    }
+
+    var alt = CALC.calcRegistration(capital, { overpop: !overpop, excludedIndustry: false, eFiling: eFiling });
+    var diffText = '';
+    if (overpop && !excluded) {
+      diffText = '<span>과밀억제권역 외 설립 시 <b>' + won(alt.total) + '</b></span><span>차액 <b>' + won(r.total - alt.total) + '</b></span>';
+    } else if (overpop && excluded) {
+      diffText = '<span>중과 적용 시 <b>' + won(alt.total) + '</b> (업종 소명 자료 필요)</span>';
+    } else {
+      diffText = '<span>과밀억제권역 설립 시 <b>' + won(alt.total) + '</b></span><span>차액 <b>' + won(alt.total - r.total) + '</b></span>';
+    }
+
+    regSummary.innerHTML =
+      '<div class="k">설립 공과금 합계</div>' +
+      '<div class="v">' + won(r.total) + '</div>' +
+      '<p>' + note + ' 법무사 보수와 공증료는 포함되지 않았습니다.</p>' +
+      '<div class="split">' + diffText + '</div>';
+
+    warnBox2.innerHTML = '';
+  }
+
+  var capitalField = bindAmount(capitalInput, capitalRange, 'capital');
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="region"]'), function (el) {
+    el.addEventListener('change', function () {
+      if (regionValue() !== 'over') excludeCheck.checked = false;
+      renderAll();
+    });
+  });
+  excludeCheck.addEventListener('change', renderAll);
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="filing"]'), function (el) {
+    el.addEventListener('change', renderAll);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-capital]'), function (btn) {
+    btn.addEventListener('click', function () {
+      capitalField.set(Number(btn.getAttribute('data-capital')));
+    });
+  });
+
+  function renderAll() {
+    renderTab1();
+    renderTab2();
+  }
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
