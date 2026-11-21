@@ -420,7 +420,7 @@
 
     <div class="cta">
       <p class="cta-lead">내 상황에 맞는 판단은 상담에서 확인하실 수 있습니다.</p>
-      <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">👉 드림 종합법률세무사무소 상담 신청</a>
+      <a class="btn primary" id="ctaForm1" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">👉 드림 종합법률세무사무소 상담 신청</a>
       <a class="btn secondary" href="tel:02-6956-8141">📞 전화 상담 (02-6956-8141)</a>
     </div>
 
@@ -513,7 +513,7 @@
 
     <div class="cta">
       <p class="cta-lead">설립 절차와 서류는 상담에서 함께 확인해 드립니다.</p>
-      <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">👉 드림 종합법률세무사무소 상담 신청</a>
+      <a class="btn primary" id="ctaForm2" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">👉 드림 종합법률세무사무소 상담 신청</a>
       <a class="btn secondary" href="tel:02-6956-8141">📞 전화 상담 (02-6956-8141)</a>
     </div>
 
@@ -859,6 +859,26 @@ var CALC = (function () {
   var cardIndividual = $('#cardIndividual');
   var cardCorp = $('#cardCorp');
   var diffCard = $('#diffCard');
+  var ctaForm1 = $('#ctaForm1');
+  var ctaForm2 = $('#ctaForm2');
+
+  /* ---------------- 상담 신청 폼 미리 채우기 ----------------
+     구글 폼 '드림 종합법률세무사무소 상담 신청'의 미리 채우기(entry) 값.
+     1781242964 = 상담 희망 분야(체크박스, 선택지 값은 한글 텍스트 그대로)
+     559120291  = 간단한 문의 내용 및 연락 편한 시간(장문 텍스트)  */
+  var FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform';
+  var FORM_ENTRY_FIELD = 'entry.1781242964';
+  var FORM_ENTRY_MESSAGE = 'entry.559120291';
+
+  function formUrl(field, message) {
+    return FORM_BASE + '?usp=pp_url'
+      + '&' + FORM_ENTRY_FIELD + '=' + encodeURIComponent(field)
+      + '&' + FORM_ENTRY_MESSAGE + '=' + encodeURIComponent(message);
+  }
+  function setCta(el, field, message) {
+    if (!el) return;
+    el.href = formUrl(field, message);
+  }
 
   function withdrawalValue() {
     var el = document.querySelector('input[name="withdraw"]:checked');
@@ -1102,6 +1122,15 @@ var CALC = (function () {
         '<span>차이 비율 <b>약 ' + pct + '%</b></span>' +
         extraSplit +
       '</div>';
+
+    // 상담 신청 링크에 지금 화면의 입력값과 계산 결과를 미리 채운다.
+    var diffLabel = absDiff < 100000
+      ? '차이 거의 없음' + (absDiff > 0 ? ' (' + won(absDiff) + ')' : '')
+      : (diff > 0 ? '법인이 ' + won(absDiff) + ' 적음' : '개인사업자가 ' + won(absDiff) + ' 적음');
+    setCta(ctaForm1, '세무 상담',
+      '[세무계산기] 연 순이익 ' + won(net) + ' / 대표 월 급여 ' + won(pay) +
+      ' / 부양가족 ' + family + '명 / 예상 차이 ' + diffLabel +
+      ' (' + (withdrawal === 'dividend' ? '배당 인출' : '법인 유보') + ' 기준)');
   }
 
   var profitField = bindAmount(profitInput, profitRange, 'profit');
@@ -1189,6 +1218,15 @@ var CALC = (function () {
       '<div class="v">' + won(r.total) + '</div>' +
       '<p>' + note + ' 법무사 보수와 공증료는 포함되지 않았습니다.</p>' +
       '<div class="split">' + diffText + '</div>';
+
+    // 상담 신청 링크에 지금 화면의 설립 조건과 공과금 합계를 미리 채운다.
+    var regionText = overpop
+      ? (excluded ? '과밀억제권역·중과 제외 업종' : '과밀억제권역')
+      : '과밀억제권역 외';
+    setCta(ctaForm2, '등기 상담',
+      '[법인설립 공과금] 자본금 ' + won(capital) + ' / ' + regionText +
+      ' / ' + (eFiling ? '전자등기' : '방문등기') +
+      ' / 공과금 합계 ' + won(r.total));
 
     warnBox2.innerHTML = '';
   }

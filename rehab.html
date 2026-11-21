@@ -418,7 +418,7 @@
 
       <div class="cta">
         <p class="cta-lead">내 상황에 맞는 판단은 상담에서 확인하실 수 있습니다.</p>
-        <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">👉 드림 종합법률세무사무소 상담 신청</a>
+        <a class="btn primary" id="ctaForm" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">👉 드림 종합법률세무사무소 상담 신청</a>
         <a class="btn secondary" href="tel:02-6956-8141">📞 전화 상담 (02-6956-8141)</a>
       </div>
     </div>
@@ -475,6 +475,22 @@
 
   var $ = function(id){ return document.getElementById(id); };
   var debtEl = $('debt'), incomeEl = $('income'), livingEl = $('living'), assetEl = $('asset');
+  var ctaForm = $('ctaForm');
+
+  /* ── 상담 신청 폼 미리 채우기 ──
+     구글 폼 '드림 종합법률세무사무소 상담 신청'의 미리 채우기(entry) 값.
+     1781242964 = 상담 희망 분야(체크박스, 선택지 값은 한글 텍스트 그대로)
+     559120291  = 간단한 문의 내용 및 연락 편한 시간(장문 텍스트)  */
+  var FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform';
+  var FORM_ENTRY_FIELD = 'entry.1781242964';
+  var FORM_ENTRY_MESSAGE = 'entry.559120291';
+
+  function setCta(field, message){
+    if (!ctaForm) return;
+    ctaForm.href = FORM_BASE + '?usp=pp_url'
+      + '&' + FORM_ENTRY_FIELD + '=' + encodeURIComponent(field)
+      + '&' + FORM_ENTRY_MESSAGE + '=' + encodeURIComponent(message);
+  }
 
   // 2026년 기준 중위소득 60% = 개인회생 생계비(최저생계비) 산정 기준
   // 근거: 보건복지부 고시 제2025-135호(2026.1.1. 시행) 2026년 기준 중위소득 × 60%, 원 단위 반올림
@@ -607,6 +623,15 @@
       bar.classList.remove('on');
       document.body.classList.remove('hasbar');
     }
+
+    // 상담 신청 링크에 지금 화면의 입력값과 계산 결과를 미리 채운다.
+    var summary = ready
+      ? '[개인회생 탕감계산기] 총 채무 ' + num(d) + '원 / 월 소득 ' + num(inc) + '원' +
+        ' / 부양가족 ' + S.fam + '명(생계비 ' + num(liv) + '원) / ' + m + '개월' +
+        ' / 예상 탕감액 ' + num(forgive) + '원' +
+        (asset > 0 ? ' / 보유 재산 ' + num(asset) + '원' : '')
+      : '[개인회생 탕감계산기] 계산기 입력값 없이 상담 신청';
+    setCta('개인회생·파산 상담', summary);
 
     msg.textContent = text;
     msg.className = 'msg' + (text ? ' show' : '') + (warn ? ' warn' : '');
