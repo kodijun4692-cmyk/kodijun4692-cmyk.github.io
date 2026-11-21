@@ -259,6 +259,23 @@
   .cta a.primary:hover{background:#16294A}
   .cta a.secondary{background:#fff;color:var(--navy);border:2px solid var(--navy)}
 
+  /* ---------- TAB 2 전용: 합계 바로 아래 큰 신청 버튼 ---------- */
+  .apply-cta{margin:16px 0 18px;text-align:center}
+  .apply-cta a.apply{
+    display:flex;align-items:center;justify-content:center;
+    min-height:68px;padding:18px 16px;border-radius:16px;
+    background:var(--navy);color:#fff;text-decoration:none;
+    border:2px solid var(--gold);box-shadow:0 10px 24px rgba(14,29,52,.26);
+    font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.35;
+  }
+  .apply-cta a.apply::after{content:"→";margin-left:9px;color:var(--gold);font-size:21px;line-height:1}
+  .apply-cta a.apply:active{box-shadow:0 4px 12px rgba(14,29,52,.26)}
+  .apply-cta .apply-tel{
+    display:inline-block;margin-top:14px;padding-bottom:2px;
+    font-size:15.5px;font-weight:700;color:#4F586C;text-decoration:none;border-bottom:1px solid #C6CFDD;
+  }
+  .apply-cta .apply-note{margin:12px 0 0;font-size:13.5px;font-weight:600;color:#5A6478;line-height:1.6}
+
   /* ---------- notes ---------- */
   details.notes{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:0;overflow:hidden;margin-bottom:16px}
   details.notes summary{
@@ -446,7 +463,7 @@
 
     <div class="card">
       <h2><span class="dot" aria-hidden="true"></span>설립 조건 입력</h2>
-      <p class="lead">자본금과 본점 소재지, 등기 신청 방식만 고르면 공과금이 바로 나옵니다.</p>
+      <p class="lead">자본금과 소재지, 신청 방식만 고르면 공과금 합계가 바로 나옵니다.</p>
 
       <div class="field">
         <div class="field-head">
@@ -478,14 +495,14 @@
             <input type="radio" name="region" value="over" checked>
             <span class="body">
               <span class="t">수도권 과밀억제권역</span>
-              <span class="d">서울 전역, 인천 대부분, 수원·성남·고양·부천·안양 등 경기 일부 — 등록면허세 3배 중과</span>
+              <span class="d">서울 전역, 인천·경기 일부 — 등록면허세 3배 중과</span>
             </span>
           </label>
           <label class="radio-card">
             <input type="radio" name="region" value="normal">
             <span class="body">
               <span class="t">과밀억제권역 외 지역</span>
-              <span class="d">그 밖의 수도권과 지방 — 기본 세율(0.4%) 적용</span>
+              <span class="d">지방 등 — 기본 세율 0.4%</span>
             </span>
           </label>
         </div>
@@ -504,18 +521,18 @@
       </div>
     </div>
 
-    <div class="results-head"><h2>계산 결과</h2></div>
     <div id="warnBox2"></div>
-    <article class="result-card" id="cardRegistration"></article>
     <div class="diff-card" id="regSummary"></div>
     <p class="fee-notice"><span class="mark" aria-hidden="true">※</span><span>위 합계는 국가·법원에 납부하는 공과금 기준이며, <b>사무소 등기 대행 보수는 별도</b>입니다.</span></p>
-    <p class="result-note">본 계산기는 2026년 기준 모의 계산이며, 공제·감면 항목에 따라 실제 세액이 달라질 수 있습니다.</p>
 
-    <div class="cta">
-      <p class="cta-lead">설립 절차와 서류는 상담에서 함께 확인해 드립니다.</p>
-      <a class="btn primary" id="ctaForm2" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">👉 드림 종합법률세무사무소 상담 신청</a>
-      <a class="btn secondary" href="tel:02-6956-8141">📞 전화 상담 (02-6956-8141)</a>
+    <div class="apply-cta">
+      <a class="apply" id="ctaForm2" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">설립등기 상담 신청하기</a>
+      <a class="apply-tel" href="tel:02-6956-8141">전화 상담 02-6956-8141</a>
+      <p class="apply-note">자본금·소재지·공과금이 상담 폼에 자동으로 채워집니다.</p>
     </div>
+
+    <article class="result-card" id="cardRegistration"></article>
+    <p class="result-note">본 계산기는 2026년 기준 모의 계산이며, 공제·감면 항목에 따라 실제 세액이 달라질 수 있습니다.</p>
 
     <details class="notes">
       <summary>계산에 반영한 기준과 가정</summary>
@@ -836,7 +853,30 @@ var CALC = (function () {
   /* ---------------- tabs ---------------- */
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
   var panels = { '1': $('#panel-1'), '2': $('#panel-2') };
-  function selectTab(id) {
+
+  /* 주소로 탭을 바로 열기: ?tab=2 · ?tab=corp · #corp → TAB 2(법인설립 공과금)
+     아무것도 없으면 기존처럼 TAB 1. */
+  function tabFromUrl() {
+    var q = {};
+    try {
+      var sp = new URLSearchParams(location.search);
+      sp.forEach(function (v, k) { q[k.toLowerCase()] = String(v).toLowerCase(); });
+    } catch (e) {}
+    var hash = String(location.hash || '').replace(/^#/, '').toLowerCase();
+    var t = q.tab || '';
+    if (t === '2' || t === 'corp' || t === 'tab2' || t === 'tab-2' || t === '법인' || t === '법인설립') return '2';
+    if (hash === 'corp' || hash === 'tab2' || hash === 'tab-2' || hash === '2' || hash === '법인설립') return '2';
+    return '1';
+  }
+  function syncTabUrl(id) {
+    try {
+      var u = new URL(location.href);
+      if (id === '2') { u.searchParams.set('tab', '2'); } else { u.searchParams.delete('tab'); }
+      u.hash = '';
+      history.replaceState(null, '', u.pathname + u.search);
+    } catch (e) {}
+  }
+  function selectTab(id, syncUrl) {
     tabs.forEach(function (t) {
       var on = t.getAttribute('data-tab') === id;
       t.setAttribute('aria-selected', on ? 'true' : 'false');
@@ -844,6 +884,7 @@ var CALC = (function () {
     Object.keys(panels).forEach(function (k) {
       panels[k].hidden = (k !== id);
     });
+    if (syncUrl !== false) syncTabUrl(id);
   }
   tabs.forEach(function (t) {
     t.addEventListener('click', function () { selectTab(t.getAttribute('data-tab')); });
@@ -1189,11 +1230,10 @@ var CALC = (function () {
     if (r.stamp > 0) {
       rowsHtml.push({ k: '인지세 (자본금 1억 원 초과)', v: won(r.stamp) });
     }
-    rowsHtml.push({ k: '공과금 합계', v: won(r.total), cls: 'total' });
 
     cardRegistration.innerHTML =
-      '<div class="r-title">법인설립 공과금 <span class="badge">' + regionLabel + '</span></div>' +
-      '<div class="r-sub">자본금 ' + compact(capital) + ' 기준 · 세금과 등기수수료만 반영</div>' +
+      '<div class="r-title">공과금 내역 <span class="badge">' + regionLabel + '</span></div>' +
+      '<div class="r-sub">자본금 ' + compact(capital) + ' 기준 · 국가·법원에 내는 금액만</div>' +
       rows(rowsHtml);
 
     var note;
@@ -1214,7 +1254,7 @@ var CALC = (function () {
     }
 
     regSummary.innerHTML =
-      '<div class="k">설립 공과금 합계</div>' +
+      '<div class="k">예상 공과금 합계</div>' +
       '<div class="v">' + won(r.total) + '</div>' +
       '<p>' + note + ' 법무사 보수와 공증료는 포함되지 않았습니다.</p>' +
       '<div class="split">' + diffText + '</div>';
@@ -1254,6 +1294,7 @@ var CALC = (function () {
   }
 
   renderAll();
+  selectTab(tabFromUrl(), false);  // 주소에 ?tab=2 · #corp가 있으면 TAB 2로 바로 열기
 })();
 </script>
 </body>
