@@ -247,35 +247,66 @@
   }
   .alert b{color:#5E3810}
 
-  /* ---------- CTA ---------- */
-  .cta{margin:4px 0 0}
-  .cta .cta-lead{font-size:14.5px;color:#525C70;text-align:center;margin:0 0 12px;line-height:1.6}
-  .cta a.btn{
+  /* ---------- 상담 신청 CTA (계산기 3종 공통) ---------- */
+  .cta{margin:6px 0 0}
+  .cta .cta-lead{font-size:15px;color:#525C70;text-align:center;margin:0 0 14px;line-height:1.6;font-weight:600}
+  .cta-apply{
+    display:flex;align-items:center;justify-content:center;gap:13px;
+    width:100%;min-height:76px;padding:15px 16px;border-radius:16px;
+    background:linear-gradient(180deg,#FFC61A 0%,#F0A400 100%);
+    color:#0F1E36;text-decoration:none;text-align:left;
+    border:3px solid #0F1E36;
+    box-shadow:0 5px 0 #0F1E36, 0 14px 26px rgba(14,29,52,.26);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .cta-apply:hover{background:linear-gradient(180deg,#FFD34D 0%,#F7AF0C 100%)}
+  .cta-apply:active{transform:translateY(4px);box-shadow:0 1px 0 #0F1E36, 0 6px 14px rgba(14,29,52,.28)}
+  .cta-apply .cta-hand{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:44px;height:44px;border-radius:50%;background:#fff;border:2.5px solid #0F1E36;
+  }
+  .cta-apply .cta-hand svg{width:26px;height:26px;display:block;fill:#0F1E36}
+  .cta-apply .cta-txt{display:block;min-width:0;font-size:20px;font-weight:900;letter-spacing:-.025em;line-height:1.24;word-break:keep-all}
+  .cta-apply .cta-txt small{display:block;margin-top:4px;font-size:13.5px;font-weight:700;color:#5A3E00;letter-spacing:0;line-height:1.4;word-break:keep-all}
+  .cta-tel{
     display:flex;align-items:center;justify-content:center;gap:9px;
-    min-height:60px;text-decoration:none;border-radius:14px;padding:16px 14px;
-    font-size:17.5px;font-weight:800;letter-spacing:-.01em;line-height:1.4;text-align:center;
+    min-height:58px;margin-top:12px;border-radius:14px;text-decoration:none;
+    background:#fff;color:var(--navy);border:2px solid var(--navy);
+    font-size:17px;font-weight:800;letter-spacing:-.01em;
   }
-  .cta a.btn + a.btn{margin-top:10px}
-  .cta a.primary{background:var(--navy);color:#fff;box-shadow:0 6px 18px rgba(14,29,52,.2)}
-  .cta a.primary:hover{background:#16294A}
-  .cta a.secondary{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+  .cta-tel svg{width:20px;height:20px;fill:var(--navy);flex:0 0 auto}
+  .cta-tel:hover{background:#F4F7FC}
+  .apply-cta{margin:18px 0 18px}
+  @media (max-width:400px){
+    .cta-apply{padding:14px 12px;gap:10px}
+    .cta-apply .cta-txt{font-size:18px}
+    .cta-apply .cta-hand{width:40px;height:40px}
+    .cta-apply .cta-hand svg{width:24px;height:24px}
+  }
 
-  /* ---------- TAB 2 전용: 합계 바로 아래 큰 신청 버튼 ---------- */
-  .apply-cta{margin:16px 0 18px;text-align:center}
-  .apply-cta a.apply{
+  /* ---------- 계산기 3종 이동 ---------- */
+  .calc-switch{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;
+    background:#fff;border:1px solid var(--line);border-radius:15px;padding:7px;
+    box-shadow:var(--shadow);margin:14px 0 0;
+  }
+  .calc-switch a{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    min-height:60px;padding:8px 6px;border-radius:11px;text-decoration:none;
+    font-size:14px;font-weight:800;color:#4A5568;line-height:1.28;text-align:center;
+    letter-spacing:-.015em;word-break:keep-all;border:1.5px solid transparent;
+  }
+  .calc-switch a .n{
     display:flex;align-items:center;justify-content:center;
-    min-height:68px;padding:18px 16px;border-radius:16px;
-    background:var(--navy);color:#fff;text-decoration:none;
-    border:2px solid var(--gold);box-shadow:0 10px 24px rgba(14,29,52,.26);
-    font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.35;
+    width:21px;height:21px;border-radius:50%;background:#E8ECF4;color:#3E4859;
+    font-size:12px;font-weight:900;line-height:1;flex:0 0 auto;
   }
-  .apply-cta a.apply::after{content:"→";margin-left:9px;color:var(--gold);font-size:21px;line-height:1}
-  .apply-cta a.apply:active{box-shadow:0 4px 12px rgba(14,29,52,.26)}
-  .apply-cta .apply-tel{
-    display:inline-block;margin-top:14px;padding-bottom:2px;
-    font-size:15.5px;font-weight:700;color:#4F586C;text-decoration:none;border-bottom:1px solid #C6CFDD;
+  .calc-switch a:hover{background:#F7F9FC;color:var(--navy)}
+  .calc-switch a[aria-current="page"]{background:var(--navy);color:#fff;box-shadow:0 6px 16px rgba(14,29,52,.24)}
+  .calc-switch a[aria-current="page"] .n{background:var(--gold);color:var(--navy)}
+  @media (max-width:400px){
+    .calc-switch a{font-size:13px;min-height:58px;padding:7px 4px}
   }
-  .apply-cta .apply-note{margin:12px 0 0;font-size:13.5px;font-weight:600;color:#5A6478;line-height:1.6}
   @media (max-width:420px){
     #panel-2 .segmented span{font-size:15px;letter-spacing:-.02em;padding:10px 4px}
   }
@@ -339,6 +370,12 @@
 </header>
 
 <main class="wrap">
+
+  <nav class="calc-switch" aria-label="계산기 3종 바로가기">
+    <a href="./" data-jump="1" aria-current="page"><span class="n" aria-hidden="true">1</span>개인 vs 법인 세무</a>
+    <a href="./?tab=2" data-jump="2"><span class="n" aria-hidden="true">2</span>법인설립 공과금</a>
+    <a href="rehab.html"><span class="n" aria-hidden="true">3</span>개인회생 탕감</a>
+  </nav>
 
   <section class="hero">
     <h1>드림 <span class="accent">세무계산기</span></h1>
@@ -442,8 +479,11 @@
 
     <div class="cta">
       <p class="cta-lead">내 상황에 맞는 판단은 상담에서 확인하실 수 있습니다.</p>
-      <a class="btn primary" id="ctaForm1" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">👉 드림 종합법률세무사무소 상담 신청</a>
-      <a class="btn secondary" href="tel:02-6956-8141">📞 전화 상담 (02-6956-8141)</a>
+      <a class="cta-apply" id="ctaForm1" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">
+        <span class="cta-hand" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/></svg></span>
+        <span class="cta-txt">드림 종합법률세무사무소 상담 신청하기<small>입력한 조건이 신청서에 자동으로 채워집니다</small></span>
+      </a>
+      <a class="cta-tel" href="tel:02-6956-8141"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>전화 상담 02-6956-8141</a>
     </div>
 
     <details class="notes">
@@ -531,9 +571,11 @@
     <p class="fee-notice"><span class="mark" aria-hidden="true">※</span><span>위 합계는 국가·법원에 납부하는 공과금 기준이며, <b>사무소 등기 대행 보수는 별도</b>입니다.</span></p>
 
     <div class="apply-cta">
-      <a class="apply" id="ctaForm2" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">설립등기 상담 신청하기</a>
-      <a class="apply-tel" href="tel:02-6956-8141">전화 상담 02-6956-8141</a>
-      <p class="apply-note">자본금·소재지·공과금이 상담 폼에 자동으로 채워집니다.</p>
+      <a class="cta-apply" id="ctaForm2" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">
+        <span class="cta-hand" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/></svg></span>
+        <span class="cta-txt">설립등기 상담 신청하기<small>자본금·소재지·공과금이 신청서에 자동으로 채워집니다</small></span>
+      </a>
+      <a class="cta-tel" href="tel:02-6956-8141"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>전화 상담 02-6956-8141</a>
     </div>
 
     <article class="result-card" id="cardRegistration"></article>
@@ -890,7 +932,27 @@ var CALC = (function () {
       panels[k].hidden = (k !== id);
     });
     if (syncUrl !== false) syncTabUrl(id);
+    syncSwitch(id);
   }
+  /* 계산기 3종 이동 탭 (1·2번은 같은 화면에서 탭 전환, 3번은 rehab.html) */
+  var switchLinks = Array.prototype.slice.call(document.querySelectorAll('.calc-switch a'));
+  function syncSwitch(id) {
+    switchLinks.forEach(function (a) {
+      if (a.getAttribute('data-jump') === id) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+  }
+  switchLinks.forEach(function (a) {
+    var j = a.getAttribute('data-jump');
+    if (!j) return;
+    a.addEventListener('click', function (ev) {
+      ev.preventDefault();
+      selectTab(j);
+      var t = document.querySelector('.tabs');
+      if (t && t.scrollIntoView) t.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
+  });
+
   tabs.forEach(function (t) {
     t.addEventListener('click', function () { selectTab(t.getAttribute('data-tab')); });
   });
