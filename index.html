@@ -131,6 +131,14 @@
     padding:11px 12px;min-height:48px;cursor:pointer;line-height:1.2;
   }
   .chip:hover{border-color:#C39418;color:var(--navy);background:#FFFCF4}
+  /* 금액 입력칸 바로 아래 실시간 한글 금액 힌트 (예: 약 1억 7,000만 원) */
+  .amount-hint{
+    margin:10px 0 0;font-size:17px;font-weight:800;line-height:1.45;color:#4F586C;
+    letter-spacing:-.005em;min-height:1.45em;
+  }
+  .amount-hint b{
+    color:#8A5F0A;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+  }
 
   input[type="range"]{
     -webkit-appearance:none;appearance:none;width:100%;height:44px;background:transparent;
@@ -339,20 +347,21 @@
         </div>
         <div class="input-line">
           <div class="box">
-            <input type="text" id="profitInput" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" value="10,000" aria-describedby="profitHelp">
-            <span class="unit">만원</span>
+            <input type="text" id="profitInput" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" value="100,000,000" aria-describedby="profitHint profitHelp">
+            <span class="unit">원</span>
           </div>
           <div class="chips">
-            <button type="button" class="chip" data-profit="5000">5천만</button>
-            <button type="button" class="chip" data-profit="10000">1억</button>
-            <button type="button" class="chip" data-profit="20000">2억</button>
-            <button type="button" class="chip" data-profit="30000">3억</button>
+            <button type="button" class="chip" data-profit="50000000">5천만</button>
+            <button type="button" class="chip" data-profit="100000000">1억</button>
+            <button type="button" class="chip" data-profit="200000000">2억</button>
+            <button type="button" class="chip" data-profit="300000000">3억</button>
           </div>
         </div>
-        <input type="range" id="profitRange" min="5000" max="30000" step="100" value="10000" aria-label="연간 순이익 슬라이더(만원)">
-        <div class="range-scale"><span>5,000만</span><span>3억</span></div>
+        <p class="amount-hint" id="profitHint"></p>
+        <input type="range" id="profitRange" min="50000000" max="300000000" step="1000000" value="100000000" aria-label="연간 순이익 슬라이더">
+        <div class="range-scale"><span>5,000만 원</span><span>3억 원</span></div>
         <p class="range-note" id="profitRangeNote" hidden></p>
-        <p class="desc" id="profitHelp">슬라이더 범위를 넘는 금액은 위 칸에 직접 입력하시면 됩니다. (예: 1억 원 = 10,000)</p>
+        <p class="desc" id="profitHelp">슬라이더 범위를 넘는 금액은 위 칸에 직접 입력하시면 됩니다. 예: 1억 7,000만 원 → 170,000,000</p>
       </div>
 
       <div class="field">
@@ -362,12 +371,13 @@
         </div>
         <div class="input-line">
           <div class="box">
-            <input type="text" id="payInput" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" value="300">
-            <span class="unit">만원</span>
+            <input type="text" id="payInput" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" value="3,000,000" aria-describedby="payHint">
+            <span class="unit">원</span>
           </div>
         </div>
-        <input type="range" id="payRange" min="0" max="1000" step="10" value="300" aria-label="대표자 월 급여 슬라이더(만원)">
-        <div class="range-scale"><span>0</span><span>500만</span><span>1,000만</span></div>
+        <p class="amount-hint" id="payHint"></p>
+        <input type="range" id="payRange" min="0" max="10000000" step="100000" value="3000000" aria-label="대표자 월 급여 슬라이더">
+        <div class="range-scale"><span>0원</span><span>500만 원</span><span>1,000만 원</span></div>
         <p class="range-note" id="payRangeNote" hidden></p>
       </div>
 
@@ -445,18 +455,19 @@
         </div>
         <div class="input-line">
           <div class="box">
-            <input type="text" id="capitalInput" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" value="1,000">
-            <span class="unit">만원</span>
+            <input type="text" id="capitalInput" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" value="10,000,000" aria-describedby="capitalHint">
+            <span class="unit">원</span>
           </div>
           <div class="chips">
-            <button type="button" class="chip" data-capital="100">100만</button>
-            <button type="button" class="chip" data-capital="1000">1천만</button>
-            <button type="button" class="chip" data-capital="5000">5천만</button>
-            <button type="button" class="chip" data-capital="10000">1억</button>
+            <button type="button" class="chip" data-capital="1000000">100만</button>
+            <button type="button" class="chip" data-capital="10000000">1천만</button>
+            <button type="button" class="chip" data-capital="50000000">5천만</button>
+            <button type="button" class="chip" data-capital="100000000">1억</button>
           </div>
         </div>
-        <input type="range" id="capitalRange" min="100" max="10000" step="100" value="1000" aria-label="자본금 슬라이더(만원)">
-        <div class="range-scale"><span>100만</span><span>5,000만</span><span>1억</span></div>
+        <p class="amount-hint" id="capitalHint"></p>
+        <input type="range" id="capitalRange" min="1000000" max="100000000" step="1000000" value="10000000" aria-label="자본금 슬라이더">
+        <div class="range-scale"><span>100만 원</span><span>5,000만 원</span><span>1억 원</span></div>
         <p class="range-note" id="capitalRangeNote" hidden></p>
       </div>
 
@@ -804,6 +815,18 @@ var CALC = (function () {
     if (man > 0 || eok === 0) out += man.toLocaleString('ko-KR') + '만 ';
     return out + '원';
   }
+  /* 원 단위 숫자를 '1억 7,000만 원'처럼 한글로. 1만 원 미만 단위가 있으면 원 단위 정확한 숫자로. */
+  function wonKorean(n) {
+    n = Math.round(Number(n) || 0);
+    if (n <= 0) return '0원';
+    if (n % 10000 !== 0) return n.toLocaleString('ko-KR') + '원';
+    var eok = Math.floor(n / 100000000);
+    var man = Math.floor((n % 100000000) / 10000);
+    var out = '';
+    if (eok > 0) out += eok.toLocaleString('ko-KR') + '억';
+    if (man > 0) out += (out ? ' ' : '') + man.toLocaleString('ko-KR') + '만';
+    return out + ' 원';
+  }
   function rows(items) {
     return items.map(function (r) {
       return '<div class="row' + (r.cls ? ' ' + r.cls : '') + '"><span>' + r.k + '</span><b>' + r.v + '</b></div>';
@@ -879,14 +902,20 @@ var CALC = (function () {
     var rMin = Number(rangeEl.min) || 0;
     var rMax = Number(rangeEl.max) || 0;
     var noteEl = document.getElementById(key + 'RangeNote');
+    var hintEl = document.getElementById(key + 'Hint');
     var api = { value: Number(rangeEl.value) || 0 };
 
+    function paintHint() {
+      if (!hintEl) return;
+      var v = api.value;
+      hintEl.innerHTML = (v > 0 && v % 10000 === 0 ? '약 ' : '') + '<b>' + wonKorean(v) + '</b>';
+    }
     function paintNote() {
       if (!noteEl) return;
       if (api.value < rMin || api.value > rMax) {
         noteEl.hidden = false;
-        noteEl.textContent = '슬라이더 범위(' + formatAmount(rMin) + '만 ~ ' + formatAmount(rMax) +
-          '만) 밖의 금액입니다. 손잡이는 ' + (api.value > rMax ? '오른쪽' : '왼쪽') +
+        noteEl.textContent = '슬라이더 범위(' + wonKorean(rMin) + ' ~ ' + wonKorean(rMax) +
+          ') 밖의 금액입니다. 손잡이는 ' + (api.value > rMax ? '오른쪽' : '왼쪽') +
           ' 끝에 있고, 계산은 입력한 금액으로 합니다.';
       } else if (!noteEl.hidden) {
         noteEl.hidden = true;
@@ -898,6 +927,7 @@ var CALC = (function () {
       if (rangeEl.value !== String(v)) rangeEl.value = String(v);
     }
     function afterChange() {
+      paintHint();
       paintNote();
       renderAll();
     }
@@ -968,17 +998,17 @@ var CALC = (function () {
       moveThumb();
       afterChange();
     };
+    // 화면을 처음 그릴 때도 금액 힌트와 범위 안내가 바로 보이도록
+    paintHint();
+    paintNote();
     return api;
   }
 
   function renderTab1() {
-    var profitMan = profitField.value;
-    var payMan = payField.value;
+    var net = profitField.value;   // 원 단위
+    var pay = payField.value;      // 원 단위
     var family = parseInt(familySelect.value, 10) || 1;
     var withdrawal = withdrawalValue();
-
-    var net = profitMan * 10000;
-    var pay = payMan * 10000;
 
     var ind = CALC.calcIndividual(net, family);
     var corp = CALC.calcCorporation(net, pay, family, withdrawal);
@@ -1008,7 +1038,7 @@ var CALC = (function () {
     corpRows.push({ k: '연간 부담 합계', v: won(corp.total), cls: 'total' });
 
     cardCorp.innerHTML =
-      '<div class="r-title">1인 법인 <span class="badge">' + (corp.payAdjusted ? '급여 = 순이익 전액' : '대표 급여 ' + koNum.format(payMan) + '만/월') + '</span></div>' +
+      '<div class="r-title">1인 법인 <span class="badge">' + (corp.payAdjusted ? '급여 = 순이익 전액' : '대표 급여 월 ' + compact(pay)) + '</span></div>' +
       '<div class="r-sub">법인세 + 대표 근로소득세 기준</div>' +
       rows(corpRows) +
       '<div class="row muted" style="margin-top:8px"><span>법인에 남는 이익</span><b>' + won(corp.retained) + '</b></div>';
@@ -1016,7 +1046,7 @@ var CALC = (function () {
     // 경고
     var warn = '';
     if (corp.payAdjusted) {
-      warn += '<div class="alert"><span aria-hidden="true">⚠</span><span><b>대표 급여가 연간 순이익을 넘습니다.</b> 순이익 전액(월 ' + compact(corp.annualPay / 12).replace(' 원', '') + ')을 급여로 지급하는 것으로 조정해 계산했습니다.</span></div>';
+      warn += '<div class="alert"><span aria-hidden="true">⚠</span><span><b>대표 급여가 연간 순이익을 넘습니다.</b> 순이익 전액(월 ' + won(corp.annualPay / 12) + ')을 급여로 지급하는 것으로 조정해 계산했습니다.</span></div>';
     }
     warnBox.innerHTML = warn;
 
@@ -1106,8 +1136,7 @@ var CALC = (function () {
   }
 
   function renderTab2() {
-    var capMan = capitalField.value;
-    var capital = capMan * 10000;
+    var capital = capitalField.value;   // 원 단위
     var region = regionValue();
     var overpop = region === 'over';
     var excluded = excludeCheck.checked;
