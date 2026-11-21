@@ -286,6 +286,35 @@
     .cta-apply .cta-hand svg{width:24px;height:24px}
   }
 
+  /* ---------- 하단 고정 상담 버튼 (스크롤해도 따라다니는 플로팅 바) ---------- */
+  body{padding-bottom:96px}
+  .float-cta{
+    position:fixed;left:50%;bottom:max(16px, env(safe-area-inset-bottom));
+    transform:translateX(-50%);z-index:60;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    width:min(420px,calc(100% - 28px));min-height:58px;padding:11px 20px 11px 14px;
+    border-radius:999px;text-decoration:none;
+    background:linear-gradient(180deg,#FFC61A 0%,#F0A400 100%);
+    color:#0F1E36;border:3px solid #10243E;
+    box-shadow:0 4px 0 #10243E, 0 12px 22px rgba(14,29,52,.26);
+    font-size:18px;font-weight:900;letter-spacing:-.03em;line-height:1.25;word-break:keep-all;
+    transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+  }
+  .float-cta:hover{background:linear-gradient(180deg,#FFD34D 0%,#F7AF0C 100%)}
+  .float-cta:active{transform:translateX(-50%) translateY(3px);box-shadow:0 1px 0 #10243E, 0 6px 14px rgba(14,29,52,.24)}
+  .float-cta .fc-ico{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:32px;height:32px;border-radius:50%;background:#fff;border:2px solid #10243E;
+  }
+  .float-cta .fc-ico svg{width:18px;height:18px;display:block;fill:#10243E}
+  .float-cta .fc-txt{display:block;min-width:0}
+  @media (max-width:400px){
+    .float-cta{min-height:54px;padding:9px 16px 9px 11px;gap:9px;font-size:17px}
+    .float-cta .fc-ico{width:30px;height:30px}
+    .float-cta .fc-ico svg{width:17px;height:17px}
+  }
+  @media print{.float-cta{display:none}body{padding-bottom:0}}
+
   /* ---------- 계산기 3종 이동 ---------- */
   .calc-switch{
     display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;
@@ -627,6 +656,12 @@
   </div>
 </footer>
 
+<!-- 하단 고정 상담 버튼 (스크롤해도 화면 하단에 붙어 따라다님 · 현재 탭의 상담 링크를 그대로 씀) -->
+<a class="float-cta" id="floatCta" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">
+  <span class="fc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></span>
+  <span class="fc-txt" id="floatCtaLabel">세무 상담 신청하기</span>
+</a>
+
 <!-- ================= 계산 로직 (순수 함수) ================= -->
 <script id="calc-core">
 /* CALC_CORE_START */
@@ -942,6 +977,7 @@ var CALC = (function () {
     });
     if (syncUrl !== false) syncTabUrl(id);
     syncSwitch(id);
+    syncFloatCta();
   }
   /* 계산기 3종 이동 탭 (1·2번은 같은 화면에서 탭 전환, 3번은 rehab.html) */
   var switchLinks = Array.prototype.slice.call(document.querySelectorAll('.calc-switch a'));
@@ -978,6 +1014,20 @@ var CALC = (function () {
   var diffCard = $('#diffCard');
   var ctaForm1 = $('#ctaForm1');
   var ctaForm2 = $('#ctaForm2');
+  var floatCta = $('#floatCta');
+  var floatCtaLabel = $('#floatCtaLabel');
+
+  /* 하단 고정 상담 버튼은 지금 열려 있는 탭의 상담 링크와 문구를 그대로 따라간다. */
+  function syncFloatCta() {
+    if (!floatCta) return;
+    var on = document.querySelector('.tab[aria-selected="true"]');
+    var tab = on ? on.getAttribute('data-tab') : '1';
+    var src = (tab === '2') ? ctaForm2 : ctaForm1;
+    if (src && src.href) floatCta.href = src.href;
+    if (floatCtaLabel) {
+      floatCtaLabel.textContent = (tab === '2' ? '설립등기' : '세무') + ' 상담 신청하기';
+    }
+  }
 
   /* ---------------- 상담 신청 폼 미리 채우기 ----------------
      구글 폼 '드림 종합법률세무사무소 상담 신청'의 미리 채우기(entry) 값.
@@ -995,6 +1045,7 @@ var CALC = (function () {
   function setCta(el, field, message) {
     if (!el) return;
     el.href = formUrl(field, message);
+    syncFloatCta();
   }
 
   function withdrawalValue() {
