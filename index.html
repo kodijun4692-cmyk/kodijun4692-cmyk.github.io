@@ -438,8 +438,8 @@
 <main class="wrap">
 
   <nav class="calc-switch" aria-label="계산기 3종 바로가기">
-    <a href="./" data-jump="1" aria-current="page"><span class="n" aria-hidden="true">1</span>개인·법인 소득세</a>
-    <a href="./?tab=2" data-jump="2"><span class="n" aria-hidden="true">2</span>법인설립 공과금</a>
+    <a href="./?tab=1" data-jump="1"><span class="n" aria-hidden="true">1</span>개인·법인 소득세</a>
+    <a href="./?tab=2" data-jump="2" aria-current="page"><span class="n" aria-hidden="true">2</span>법인설립 공과금</a>
     <a href="rehab.html"><span class="n" aria-hidden="true">3</span>개인회생 탕감</a>
   </nav>
 
@@ -977,8 +977,7 @@ var CALC = (function () {
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
   var panels = { '1': $('#panel-1'), '2': $('#panel-2') };
 
-  /* 주소로 탭을 바로 열기: ?tab=2 · ?tab=corp · #corp → TAB 2(법인설립 공과금)
-     아무것도 없으면 기존처럼 TAB 1. */
+  /* 기본 진입 시 항상 TAB 2(법인설립 공과금)가 열리고, ?tab=1·?tab=tax·#1일 때만 TAB 1 열기 */
   function tabFromUrl() {
     var q = {};
     try {
@@ -987,14 +986,14 @@ var CALC = (function () {
     } catch (e) {}
     var hash = String(location.hash || '').replace(/^#/, '').toLowerCase();
     var t = q.tab || '';
-    if (t === '2' || t === 'corp' || t === 'tab2' || t === 'tab-2' || t === '법인' || t === '법인설립') return '2';
-    if (hash === 'corp' || hash === 'tab2' || hash === 'tab-2' || hash === '2' || hash === '법인설립') return '2';
-    return '1';
+    if (t === '1' || t === 'tax' || t === 'tab1' || t === 'tab-1' || t === '소득세') return '1';
+    if (hash === '1' || hash === 'tax' || hash === 'tab1' || hash === 'tab-1' || hash === '소득세') return '1';
+    return '2';
   }
   function syncTabUrl(id) {
     try {
       var u = new URL(location.href);
-      if (id === '2') { u.searchParams.set('tab', '2'); } else { u.searchParams.delete('tab'); }
+      if (id === '1') { u.searchParams.set('tab', '1'); } else { u.searchParams.delete('tab'); }
       u.hash = '';
       history.replaceState(null, '', u.pathname + u.search);
     } catch (e) {}
