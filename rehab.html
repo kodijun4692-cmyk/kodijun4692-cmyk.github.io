@@ -813,7 +813,9 @@
     if (incomeError){
       heroNum.textContent = '계산 불가';
       heroNum.className = 'amount is-error';
-      $('forgiveExact').textContent = '월 소득이 생계비보다 많아야 개인회생 변제금 계산이 가능합니다';
+      $('forgiveExact').textContent = inc === liv
+        ? '소득과 생계비가 같아 월 변제 가능 금액이 없습니다'
+        : '소득보다 생계비가 큽니다 (월 소득이 생계비보다 많아야 계산됩니다)';
     } else if (ready){
       put(heroNum, forgive);
       heroNum.className = 'amount';
@@ -882,7 +884,7 @@
     var msg = $('msg');
     var text = '', warn = false, isErr = false;
     if (incomeError){
-      text = '오류: 월 생계비(' + num(liv) + '원)가 월 실수령 소득(' + num(inc) + '원) 이상이어서 월 변제 가능 금액이 없습니다. 부양가족 수·생계비를 다시 확인하시거나, 개인파산 등 다른 절차를 상담해 주세요.';
+      text = (inc === liv ? '소득과 생계비가 같아' : '소득보다 생계비가 커서') + ' 월 변제 가능 금액이 없습니다. 부양가족 수·생계비를 다시 확인하시거나, 개인파산 등 다른 절차를 상담해 주세요.';
       isErr = true;
     } else if (d <= 0){
       text = '';
