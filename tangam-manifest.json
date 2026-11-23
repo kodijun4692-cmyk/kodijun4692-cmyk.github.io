@@ -1,0 +1,21 @@
+{
+  "name": "드림 개인회생 탕감 계산기",
+  "short_name": "드림 탕감",
+  "description": "드림 종합법률세무사무소 개인회생 예상 탕감액·월 변제금 계산기",
+  "start_url": "/tangam.html",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0F2A52",
+  "icons": [
+    {
+      "src": "/tangam-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/tangam-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

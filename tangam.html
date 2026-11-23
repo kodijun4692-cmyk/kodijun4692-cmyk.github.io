@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJWRXJFWK0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJWRXJFWK0');
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E1D34">
+<meta name="description" content="채무액과 월 소득, 보유 재산(청산가치)을 넣으면 36개월 기준 예상 탕감액과 월 변제금을 계산해 보여 드립니다. 드림 종합법률세무사무소 (변호사 김치현).">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230E1D34'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-size='15' font-weight='700' fill='%23E5B542' text-anchor='middle'%3E%EB%93%9C%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#0F2A52" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="드림 탕감" />
+<link rel="manifest" href="/tangam-manifest.json" />
+<link rel="apple-touch-icon" href="/tangam-icon-192.png" />
+<link rel="icon" type="image/png" href="/tangam-icon-192.png" />
+<title>드림 개인회생 탕감 계산기</title>
+<style>
+  :root{
+    --navy:#0E1D34;
+    --navy-soft:#1B3054;
+    --gold:#E5B542;
+    --gold-soft:#FBF1D8;
+    --ink:#16202F;
+    --muted:#4F586C;
+    --line:#DDE3EE;
+    --bg:#F4F6FA;
+    --white:#fff;
+    --radius:16px;
+    --shadow:0 1px 2px rgba(14,29,52,.05), 0 8px 24px rgba(14,29,52,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Segoe UI",Roboto,sans-serif;
+    font-size:17px;
+    line-height:1.7;
+    -webkit-text-size-adjust:100%;
+    -webkit-font-smoothing:antialiased;
+  }
+  b,strong{font-weight:700}
+  .num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+  /* ---------- header ---------- */
+  .site-header{background:var(--navy);color:#fff;border-bottom:3px solid var(--gold)}
+  .site-header .inner{
+    max-width:760px;margin:0 auto;padding:16px 18px;
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 auto}
+  .brand .mark{
+    width:44px;height:44px;border-radius:11px;background:var(--gold);
+    color:var(--navy);font-weight:800;font-size:17px;letter-spacing:-.05em;
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+  }
+  .brand .name{
+    font-size:clamp(22px,5.6vw,25px);font-weight:800;letter-spacing:-.02em;line-height:1.28;color:#fff;
+  }
+  .brand .sub{font-size:15px;font-weight:600;color:#C2CEDF;line-height:1.3;margin-top:3px}
+  .head-tel{
+    flex:1 1 100%;display:flex;align-items:center;justify-content:center;
+    min-height:50px;text-decoration:none;color:var(--navy);
+    background:var(--gold);border-radius:12px;padding:12px 18px;
+    font-size:17px;font-weight:800;letter-spacing:.01em;white-space:nowrap;
+  }
+  @media (min-width:620px){
+    .head-tel{flex:0 0 auto;min-height:46px;border-radius:999px;padding:10px 20px;font-size:16px}
+  }
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px 40px}
+  .hero{padding:28px 0 16px}
+  .hero h1{
+    margin:0 0 10px;font-size:clamp(24px,6vw,27px);line-height:1.3;
+    letter-spacing:-.02em;font-weight:800;color:var(--navy);
+  }
+  .hero h1 .accent{color:#98670C}
+  .hero p{margin:0;color:#334056;font-size:16.5px;line-height:1.72}
+  .hero .meta{margin-top:12px;font-size:14.5px;color:var(--muted);line-height:1.6}
+
+  /* ---------- tabs ---------- */
+  .tabs{
+    display:grid;grid-template-columns:1fr 1fr;gap:7px;
+    background:#E6EAF2;padding:6px;border-radius:16px;margin:18px 0 20px;
+  }
+  .tab{
+    appearance:none;border:0;background:transparent;cursor:pointer;
+    font:inherit;font-weight:800;font-size:16.5px;color:#414B60;
+    min-height:54px;padding:11px 8px;border-radius:12px;line-height:1.32;letter-spacing:-.015em;
+  }
+  .tab[aria-selected="true"]{background:var(--white);color:var(--navy);box-shadow:0 1px 4px rgba(14,29,52,.16)}
+  .tab .t-num{display:block;font-size:13px;font-weight:800;color:#586275;letter-spacing:.04em;margin-bottom:2px}
+  .tab[aria-selected="true"] .t-num{color:#8A5F0A}
+
+  /* ---------- cards ---------- */
+  .card{
+    background:var(--white);border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px;
+  }
+  .card h2{
+    margin:0 0 6px;font-size:20px;font-weight:800;color:var(--navy);letter-spacing:-.02em;line-height:1.35;
+    display:flex;align-items:center;gap:9px;
+  }
+  .card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex:0 0 auto}
+  .card .lead{margin:0 0 20px;font-size:15px;color:#525C70;line-height:1.65}
+
+  .field{margin-bottom:24px}
+  .field:last-child{margin-bottom:2px}
+  .field-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:9px}
+  .field-head label{font-size:16.5px;font-weight:800;color:#1E2839;line-height:1.4}
+  .field-head .hint{font-size:13.5px;color:#5A6478;text-align:right;line-height:1.45;font-weight:600}
+  .field .desc{margin:2px 0 0;font-size:14.5px;color:#525C70;line-height:1.65}
+
+  .input-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .input-line .box{
+    display:flex;align-items:center;gap:8px;flex:1 1 190px;min-width:0;
+    border:1.5px solid #C9D1E0;border-radius:12px;background:#FBFCFE;padding:0 14px;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .input-line .box:focus-within{border-color:#C39418;box-shadow:0 0 0 3px rgba(229,181,66,.28);background:#fff}
+  .input-line input[type="text"],
+  .input-line input[type="number"]{
+    appearance:none;-moz-appearance:textfield;border:0;background:transparent;outline:0;
+    font:inherit;font-weight:800;font-size:21px;color:var(--navy);letter-spacing:-.01em;
+    padding:13px 0;flex:1 1 auto;width:100%;min-width:0;max-width:100%;
+    text-align:right;font-variant-numeric:tabular-nums;
+  }
+  @media (min-width:620px){
+    .input-line .box{flex:0 1 340px}
+  }
+  .input-line input[type="number"]::-webkit-outer-spin-button,
+  .input-line input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .input-line .unit{font-size:15.5px;font-weight:800;color:#4F586C;flex:0 0 auto}
+  .input-line .chips{display:flex;gap:6px;flex:0 0 auto}
+  .chip{
+    appearance:none;border:1.5px solid #CBD3E1;background:#fff;border-radius:9px;
+    font:inherit;font-size:15px;font-weight:800;color:#3E4859;
+    padding:11px 12px;min-height:48px;cursor:pointer;line-height:1.2;
+  }
+  .chip:hover{border-color:#C39418;color:var(--navy);background:#FFFCF4}
+  /* 금액 입력칸 바로 아래 실시간 한글 금액 힌트 (예: 약 1억 7,000만 원) */
+  .amount-hint{
+    margin:10px 0 0;font-size:17px;font-weight:800;line-height:1.45;color:#4F586C;
+    letter-spacing:-.005em;min-height:1.45em;
+  }
+  .amount-hint b{
+    color:#8A5F0A;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+  }
+
+  input[type="range"]{
+    -webkit-appearance:none;appearance:none;width:100%;height:44px;background:transparent;
+    margin:6px 0 0;display:block;cursor:pointer;
+    /* 가로 드래그는 슬라이더가, 세로는 페이지 스크롤이 맡도록 (iOS 터치 대응) */
+    touch-action:pan-y;-webkit-user-select:none;user-select:none;
+  }
+  input[type="range"]::-webkit-slider-runnable-track{height:8px;border-radius:999px;background:#DCE2EC}
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;
+    background:var(--white);border:4px solid #C39418;box-shadow:0 2px 6px rgba(14,29,52,.28);margin-top:-10px;
+  }
+  input[type="range"]::-moz-range-track{height:8px;border-radius:999px;background:#DCE2EC}
+  input[type="range"]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid #C39418}
+  .range-scale{display:flex;justify-content:space-between;font-size:13.5px;font-weight:600;color:#4F586C;margin-top:2px}
+  .range-note{display:block;margin:8px 0 0;font-size:13.5px;font-weight:700;color:#8A5F0A;line-height:1.55}
+  .range-note[hidden]{display:none}
+
+  select{
+    appearance:none;-webkit-appearance:none;width:100%;font:inherit;font-weight:800;font-size:17px;color:var(--navy);
+    background:#FBFCFE url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%234F586C' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 15px center/13px 9px;
+    border:1.5px solid #C9D1E0;border-radius:12px;padding:15px 42px 15px 14px;min-height:56px;
+  }
+
+  .segmented{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#E9EDF4;padding:5px;border-radius:13px}
+  .segmented label{position:relative;display:flex}
+  .segmented input{position:absolute;opacity:0;width:1px;height:1px}
+  .segmented span{
+    display:flex;align-items:center;justify-content:center;text-align:center;flex:1 1 auto;
+    font-size:16px;font-weight:800;color:#414B60;line-height:1.35;
+    min-height:52px;padding:10px 6px;border-radius:10px;cursor:pointer;
+    word-break:keep-all;
+  }
+  .segmented input:checked + span{background:#fff;color:var(--navy);box-shadow:0 1px 3px rgba(14,29,52,.16)}
+  .segmented input:focus-visible + span{outline:2px solid #C39418;outline-offset:2px}
+
+  .radio-cards{display:grid;gap:10px}
+  .radio-card{position:relative;display:block}
+  .radio-card input{position:absolute;opacity:0;width:1px;height:1px}
+  .radio-card .body{
+    display:block;border:1.5px solid #CDD5E3;border-radius:13px;padding:15px 16px 15px 46px;
+    cursor:pointer;background:#FBFCFE;position:relative;
+  }
+  .radio-card .body::before{
+    content:"";position:absolute;left:15px;top:18px;width:19px;height:19px;border-radius:50%;
+    border:2px solid #A7B1C4;background:#fff;
+  }
+  .radio-card input:checked + .body{border-color:#C39418;background:var(--gold-soft)}
+  .radio-card input:checked + .body::before{border-color:#A8760F;box-shadow:inset 0 0 0 4px #A8760F}
+  .radio-card input:focus-visible + .body{outline:2px solid #C39418;outline-offset:2px}
+  .radio-card .t{display:block;font-size:17px;font-weight:800;color:var(--navy);line-height:1.4}
+  .radio-card .d{display:block;font-size:14.5px;color:#525C70;margin-top:4px;line-height:1.6;word-break:keep-all}
+
+  .check{display:flex;align-items:flex-start;gap:11px;margin-top:14px}
+  .check input{width:22px;height:22px;margin:2px 0 0;accent-color:#A8760F;flex:0 0 auto}
+  .check label{font-size:15px;color:#39445A;line-height:1.65;word-break:keep-all}
+  .check label b{color:var(--navy)}
+
+  /* ---------- results ---------- */
+  .results-head{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    margin:26px 0 12px;padding:0 2px;
+  }
+  .results-head h2{margin:0;font-size:15px;font-weight:800;color:#4F586C;letter-spacing:.08em}
+
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+  @media (max-width:620px){.result-grid{grid-template-columns:1fr}}
+
+  .result-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin:0}
+  .result-card.is-corp{border-color:#E4D6B2;background:linear-gradient(180deg,#FFFDF7 0%,#fff 55%)}
+  .result-card .r-title{display:flex;align-items:center;flex-wrap:wrap;gap:7px;font-size:19px;font-weight:800;color:var(--navy);margin-bottom:3px;line-height:1.4}
+  .result-card .r-title .badge{
+    font-size:13px;font-weight:800;color:#5E4713;background:#F7E7BF;
+    border-radius:7px;padding:3px 8px;letter-spacing:.01em;line-height:1.4;
+  }
+  .result-card .r-sub{font-size:14.5px;color:#525C70;margin-bottom:14px;line-height:1.55}
+  .row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:7px 0;font-size:16.5px;color:#3E4859}
+  .row > span{min-width:0;line-height:1.5}
+  .row > b{font-weight:800;color:#1A2333;white-space:nowrap;font-variant-numeric:tabular-nums;font-size:17px}
+  .row.total{border-top:2px solid #E2E7F0;margin-top:9px;padding-top:12px;font-size:17px;color:var(--navy);font-weight:800}
+  .row.total > b{color:var(--navy);font-weight:800;font-size:22px;letter-spacing:-.01em}
+  .row.muted > span,.row.muted > b{color:#525C70;font-weight:700}
+  .row.warn > b{color:#A8431B}
+
+  .diff-card{
+    background:var(--navy);color:#fff;border:0;border-radius:var(--radius);
+    padding:22px;box-shadow:0 10px 26px rgba(14,29,52,.22);margin-bottom:16px;
+  }
+  .diff-card .k{font-size:14px;font-weight:800;color:var(--gold);letter-spacing:.09em}
+  .diff-card .v{
+    font-size:clamp(28px,7.4vw,34px);font-weight:800;letter-spacing:-.025em;margin:8px 0 4px;
+    line-height:1.24;font-variant-numeric:tabular-nums;
+  }
+  .diff-card .v small{font-size:.54em;font-weight:700;color:#CFD9E8;margin-left:5px}
+  .diff-card p{margin:8px 0 0;font-size:16.5px;color:#E1E8F3;line-height:1.7}
+  .diff-card p .hl{color:#F2CD72;font-weight:800}
+  .diff-card .split{
+    display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px;padding-top:14px;
+    border-top:1px solid rgba(255,255,255,.18);font-size:14.5px;color:#BDCAE0;line-height:1.6;
+  }
+  .diff-card .split b{color:#fff;font-weight:800}
+
+  .alert{
+    display:flex;gap:10px;background:#FFF6EC;border:1.5px solid #EFD3B6;color:#6E4413;
+    border-radius:12px;padding:14px 15px;font-size:15px;line-height:1.65;margin-bottom:14px;
+  }
+  .alert b{color:#5E3810}
+
+  /* ---------- 상담 신청 CTA (계산기 3종 공통) ---------- */
+  .cta{margin:6px 0 0}
+  @keyframes ctaTwinkle{
+    0%,100%{color:#C93B3B;text-shadow:0 0 0 rgba(201,59,59,0);box-shadow:0 0 0 0 rgba(201,59,59,.28)}
+    50%{color:#F01414;text-shadow:0 0 10px rgba(240,20,20,.38);box-shadow:0 0 0 6px rgba(201,59,59,0)}
+  }
+  .cta .cta-lead{font-size:15.5px;color:#C93B3B;text-align:center;margin:0 0 14px;line-height:1.6;font-weight:800;padding:11px 13px;border-radius:12px;background:#FFF3F3;border:2px solid #E58A8A;animation:ctaTwinkle 1.6s ease-in-out infinite}
+  .cta-apply{
+    display:flex;align-items:center;justify-content:center;gap:13px;
+    width:100%;min-height:76px;padding:15px 16px;border-radius:16px;
+    background:linear-gradient(180deg,#FFC61A 0%,#F0A400 100%);
+    color:#0F1E36;text-decoration:none;text-align:left;
+    border:3px solid #0F1E36;
+    box-shadow:0 5px 0 #0F1E36, 0 14px 26px rgba(14,29,52,.26);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .cta-apply:hover{background:linear-gradient(180deg,#FFD34D 0%,#F7AF0C 100%)}
+  .cta-apply:active{transform:translateY(4px);box-shadow:0 1px 0 #0F1E36, 0 6px 14px rgba(14,29,52,.28)}
+  .cta-apply .cta-hand{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:44px;height:44px;border-radius:50%;background:#fff;border:2.5px solid #0F1E36;
+  }
+  .cta-apply .cta-hand svg{width:26px;height:26px;display:block;fill:#0F1E36}
+  .cta-apply .cta-txt{display:block;min-width:0;text-align:left}
+  .cta-apply .cta-brand{display:block;font-size:13.5px;font-weight:800;color:#6B4600;letter-spacing:-.01em;line-height:1.3;word-break:keep-all}
+  .cta-apply .cta-act{display:block;margin-top:2px;font-size:22px;font-weight:900;letter-spacing:-.03em;line-height:1.2;word-break:keep-all}
+  .cta-note{margin:10px 0 0;text-align:center;font-size:13px;font-weight:600;color:#5A6478;line-height:1.5;word-break:keep-all}
+  .cta-tel{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    min-height:58px;margin-top:12px;border-radius:14px;text-decoration:none;
+    background:#fff;color:var(--navy);border:2px solid var(--navy);
+    font-size:17px;font-weight:800;letter-spacing:-.01em;
+  }
+  .cta-tel svg{width:20px;height:20px;fill:var(--navy);flex:0 0 auto}
+  .cta-tel:hover{background:#F4F7FC}
+  .apply-cta{margin:18px 0 18px}
+  @media (max-width:400px){
+    .cta-apply{padding:14px 12px;gap:10px}
+    .cta-apply .cta-act{font-size:20px}
+    .cta-apply .cta-hand{width:40px;height:40px}
+    .cta-apply .cta-hand svg{width:24px;height:24px}
+  }
+
+  /* ---------- 하단 고정 상담 버튼 (스크롤해도 따라다니는 플로팅 바) ---------- */
+  body{padding-bottom:96px}
+  .float-cta{
+    position:fixed;left:50%;bottom:max(16px, env(safe-area-inset-bottom));
+    transform:translateX(-50%);z-index:60;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    width:min(420px,calc(100% - 28px));min-height:58px;padding:11px 20px 11px 14px;
+    border-radius:999px;text-decoration:none;
+    background:linear-gradient(180deg,#FFC61A 0%,#F0A400 100%);
+    color:#0F1E36;border:3px solid #10243E;
+    box-shadow:0 4px 0 #10243E, 0 12px 22px rgba(14,29,52,.26);
+    font-size:18px;font-weight:900;letter-spacing:-.03em;line-height:1.25;word-break:keep-all;
+    transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+  }
+  .float-cta:hover{background:linear-gradient(180deg,#FFD34D 0%,#F7AF0C 100%)}
+  .float-cta:active{transform:translateX(-50%) translateY(3px);box-shadow:0 1px 0 #10243E, 0 6px 14px rgba(14,29,52,.24)}
+  .float-cta .fc-ico{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:32px;height:32px;border-radius:50%;background:#fff;border:2px solid #10243E;
+  }
+  .float-cta .fc-ico svg{width:18px;height:18px;display:block;fill:#10243E}
+  .float-cta .fc-txt{display:block;min-width:0}
+  @media (max-width:400px){
+    .float-cta{min-height:54px;padding:9px 16px 9px 11px;gap:9px;font-size:17px}
+    .float-cta .fc-ico{width:30px;height:30px}
+    .float-cta .fc-ico svg{width:17px;height:17px}
+  }
+  @media print{.float-cta{display:none}body{padding-bottom:0}}
+
+  /* ---------- 계산기 3종 이동 ---------- */
+  .calc-switch{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;
+    background:#fff;border:1px solid var(--line);border-radius:15px;padding:7px;
+    box-shadow:var(--shadow);margin:14px 0 0;
+  }
+  .calc-switch a{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    min-height:60px;padding:8px 6px;border-radius:11px;text-decoration:none;
+    font-size:14px;font-weight:800;color:#4A5568;line-height:1.28;text-align:center;
+    letter-spacing:-.015em;word-break:keep-all;border:1.5px solid transparent;
+  }
+  .calc-switch a .n{
+    display:flex;align-items:center;justify-content:center;
+    width:21px;height:21px;border-radius:50%;background:#E8ECF4;color:#3E4859;
+    font-size:12px;font-weight:900;line-height:1;flex:0 0 auto;
+  }
+  .calc-switch a:hover{background:#F7F9FC;color:var(--navy)}
+  .calc-switch a[aria-current="page"]{background:var(--navy);color:#fff;box-shadow:0 6px 16px rgba(14,29,52,.24)}
+  .calc-switch a[aria-current="page"] .n{background:var(--gold);color:var(--navy)}
+  @media (max-width:400px){
+    .calc-switch a{font-size:13px;min-height:58px;padding:7px 4px}
+  }
+  @media (max-width:420px){
+    #panel-2 .segmented span{font-size:15px;letter-spacing:-.02em;padding:10px 4px}
+  }
+  .diff-card p{word-break:keep-all}
+
+  /* ---------- notes ---------- */
+  details.notes{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:0;overflow:hidden;margin-bottom:16px}
+  details.notes summary{
+    cursor:pointer;list-style:none;padding:18px 20px;font-size:16.5px;font-weight:800;color:#2A3446;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;line-height:1.45;min-height:60px;
+  }
+  details.notes summary::-webkit-details-marker{display:none}
+  details.notes summary::after{content:"＋";color:#A8760F;font-weight:800;font-size:20px;line-height:1}
+  details.notes[open] summary::after{content:"−"}
+  details.notes ul{margin:0;padding:0 20px 20px 38px;font-size:15px;color:#414B60;line-height:1.85}
+  details.notes li{margin-bottom:7px}
+
+  .disclaimer{
+    background:#fff;border:1.5px dashed #C6CFDD;border-radius:14px;padding:18px 18px;margin-top:8px;
+    font-size:14.5px;color:#414B60;line-height:1.85;
+  }
+  .disclaimer b{color:#1E2839}
+
+  .site-footer{
+    background:var(--navy);color:#C9D4E4;margin-top:24px;padding:26px 18px 34px;font-size:15px;line-height:1.9;
+  }
+  .site-footer .inner{max-width:760px;margin:0 auto}
+  .site-footer .f-name{color:#fff;font-weight:800;font-size:19px;margin-bottom:4px;line-height:1.4}
+  .site-footer a{color:#F2CD72;text-decoration:none;font-weight:800}
+  .site-footer .f-line{color:#B4C1D6}
+  .site-footer .f-copy{margin-top:14px;font-size:14px;color:#A5B4CB;line-height:1.8}
+
+  .nowrap,.t-keep{white-space:nowrap}
+  .result-note{margin:0 2px 14px;font-size:13px;color:#5A6478;line-height:1.6}
+  /* 공과금 합계에 대한 보수 별도 안내 */
+  .fee-notice{
+    display:flex;gap:9px;align-items:flex-start;
+    background:#FFF8E8;border:2px solid #DFB347;border-left-width:6px;border-radius:13px;
+    padding:15px 16px;margin:0 0 14px;
+    font-size:16px;font-weight:800;color:#54340A;line-height:1.7;letter-spacing:-.005em;word-break:keep-all;
+  }
+  .fee-notice .mark{flex:0 0 auto;font-size:16px;line-height:1.7;color:#9A6710}
+  /* 상담 안내(절세·변제 판단은 상담에서 확인) */
+  .consult-note{
+    display:flex;gap:9px;align-items:flex-start;
+    background:#EDF2FA;border:2px solid #AEC1DE;border-left-width:6px;border-radius:13px;
+    padding:15px 16px;margin:0 0 16px;
+    font-size:15.5px;font-weight:700;color:#1F2F49;line-height:1.75;letter-spacing:-.005em;word-break:keep-all;
+  }
+  .consult-note .mark{flex:0 0 auto;font-size:16px;line-height:1.75;color:#3B5580}
+  .consult-note b{color:#0F2A52}
+  .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  :focus-visible{outline:3px solid #C39418;outline-offset:2px}
+  @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+  /* ================= 개인회생 탕감 계산기 전용 ================= */
+  .hero-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px}
+  .hero .meta-line{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0;font-size:14.5px;font-weight:600;color:#5A6478;line-height:1.6}
+  .pill{display:inline-block;padding:4px 10px;border-radius:7px;font-size:13px;font-weight:800;color:#5E4713;background:#FBF1D8;border:1px solid #E4D6B2;white-space:nowrap;letter-spacing:0}
+  .badge{display:inline-block;padding:4px 10px;border-radius:8px;font-size:13.5px;font-weight:800;color:#5E4713;background:#FBF1D8;border:1px solid #E4D6B2;white-space:nowrap;letter-spacing:0}
+  .reset{appearance:none;background:#fff;border:1.5px solid #C9D1E0;color:#3E4859;font:inherit;font-size:14.5px;font-weight:800;min-height:46px;padding:8px 18px;border-radius:999px;cursor:pointer;line-height:1.2}
+  .reset:hover{border-color:#C39418;color:var(--navy);background:#FFFCF4}
+
+  .layout{display:flex;flex-direction:column;gap:16px}
+  .stack{display:flex;flex-direction:column;gap:16px}
+  .card.result{border-color:#E4D6B2;background:linear-gradient(180deg,#FFFDF7 0%,#fff 55%)}
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  .card-head h2{margin:0}
+
+  .label{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:16.5px;font-weight:800;color:#1E2839;margin-bottom:10px;line-height:1.4}
+  .label .opt{font-size:14px;font-weight:600;color:#5A6478}
+  .label .tag{font-size:13px;font-weight:800;color:var(--navy);background:var(--gold);border-radius:999px;padding:3px 10px;letter-spacing:0}
+  .label .tag.edit{color:#8A5F0A;background:#FFF8E8;border:1.5px solid #DFB347}
+
+  .money{position:relative}
+  .money input{
+    width:100%;height:58px;padding:0 42px 0 16px;
+    font:inherit;font-size:21px;font-weight:800;letter-spacing:-.01em;
+    color:var(--navy);text-align:right;
+    background:#FBFCFE;border:1.5px solid #C9D1E0;border-radius:12px;outline:none;
+    font-variant-numeric:tabular-nums;
+    transition:border-color .15s,box-shadow .15s,background .15s;
+  }
+  .money input::placeholder{color:#8B95A8;font-weight:600;font-size:17px}
+  .money input:focus{border-color:#C39418;box-shadow:0 0 0 3px rgba(229,181,66,.28);background:#fff}
+  .money input.is-error{border-color:#C93B3B;background:#FFF7F7;color:#9B1C1C}
+  .money input.is-error:focus{border-color:#C93B3B;box-shadow:0 0 0 3px rgba(201,59,59,.2)}
+  .money .won{position:absolute;right:15px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:800;color:#4F586C;pointer-events:none}
+  .hint{margin-top:9px;font-size:14.5px;line-height:1.65;color:#5A6478;min-height:1.65em}
+  .hint b{color:#8A5F0A;font-weight:800}
+  .hint.is-error{color:#C93B3B;font-weight:800}
+
+  /* 부양가족 수 스테퍼 */
+  .stepper{display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 7px;background:#FBFCFE;border:1.5px solid #C9D1E0;border-radius:12px}
+  .step{
+    appearance:none;width:44px;height:44px;border-radius:10px;border:1.5px solid #C9D1E0;
+    background:#fff;color:var(--navy);font-size:24px;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-family:inherit;font-weight:700;
+    transition:background .15s,border-color .15s,opacity .15s;
+  }
+  .step:hover:not(:disabled){background:#FFF8E8;border-color:#C39418}
+  .step:disabled{opacity:.34;cursor:default}
+  .step-val{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--navy)}
+  .step-val small{font-size:16px;font-weight:700;color:#4F586C;margin-left:3px}
+
+  /* 변제 기간 탭 */
+  .field .tabs{margin:0}
+  .tab{min-height:58px;font-size:17px}
+  .tab small{display:block;font-size:13.5px;font-weight:700;color:#5A6478;margin-top:2px;letter-spacing:0}
+  .tab[aria-selected="true"] small{color:#8A5F0A}
+
+  /* 결과 */
+  .hero-amount{margin:0 0 18px;padding:20px 18px;border-radius:14px;background:#FFF8E8;border:2px solid #DFB347}
+  .res-label{display:block;font-size:15px;font-weight:800;color:#8A5F0A;letter-spacing:.02em}
+  .amount{font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .amount .u{font-size:.5em;font-weight:700;color:#6B5320;margin-left:3px;letter-spacing:0}
+  .hero-amount .amount{display:block;margin-top:6px;color:var(--navy);font-size:clamp(30px,8.4vw,34px);line-height:1.16}
+  .hero-amount .amount.is-empty{color:#9AA4B6;letter-spacing:2px}
+  .hero-amount .exact{margin-top:8px;font-size:14.5px;font-weight:600;color:#6B5320;font-variant-numeric:tabular-nums;line-height:1.5}
+
+  .kv{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid #E6EAF2}
+  .kv:last-of-type{border-bottom:0}
+  .kv .k{font-size:16.5px;line-height:1.45;color:#3E4859;font-weight:700}
+  .kv .k small{display:block;font-size:14px;font-weight:600;color:#5A6478;margin-top:2px}
+  .kv .v{font-size:19px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap}
+  .kv .v .u{font-size:14.5px;color:#5A6478;font-weight:700;margin-left:2px;letter-spacing:0}
+
+  .rate{margin-top:18px}
+  .rate-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .rate-top .k{font-size:16.5px;color:#3E4859;font-weight:700;line-height:1.4}
+  .rate-top .p{font-size:24px;font-weight:800;color:#8A5F0A;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1.2}
+  .rate-top .p.is-empty{color:#9AA4B6;font-weight:700}
+  .track{height:16px;border-radius:99px;background:#E3E8F1;overflow:hidden;position:relative}
+  .fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#C79427 0%,#F5C451 55%,#FFE29A 100%);transition:width .45s cubic-bezier(.22,.75,.3,1)}
+  .scale{display:flex;justify-content:space-between;margin-top:8px;font-size:13.5px;font-weight:600;color:#5A6478;font-variant-numeric:tabular-nums}
+  .calc{margin-top:18px;padding:15px;border-radius:12px;background:#F4F6FA;border:1px solid var(--line);font-size:14.5px;line-height:1.85;color:#414B60;font-variant-numeric:tabular-nums;word-break:keep-all}
+  .calc .cl{display:flex;gap:8px;align-items:baseline}
+  .calc .cl+.cl{margin-top:4px}
+  .calc .cn{color:#8A5F0A;font-weight:800;font-size:14px;flex:0 0 auto;width:14px;text-align:center;line-height:1.7}
+  .calc b{color:var(--navy);font-weight:800}
+  .msg{margin-top:14px;padding:13px 15px;border-radius:12px;font-size:15px;line-height:1.7;background:#F4F6FA;border:1px solid var(--line);color:#414B60;display:none}
+  .msg.show{display:block}
+  .msg.warn{background:#FFF6EC;border-color:#EFD3B6;color:#6E4413}
+  .msg.error{background:#FFF3F3;border-color:#E5A1A1;border-left:5px solid #C93B3B;color:#8B1A1A;font-weight:700}
+  .hero-amount .amount.is-error{color:#C93B3B;letter-spacing:-.02em}
+  /* 청산가치 상환 방식 선택 — 굵은 테두리 + 반짝이는 후광 */
+  @keyframes liqPop{0%{transform:scale(.95);opacity:.6}65%{transform:scale(1.015)}100%{transform:scale(1);opacity:1}}
+  @keyframes liqGlow{
+    0%,100%{box-shadow:0 0 0 0 rgba(229,181,66,.55),0 8px 22px rgba(15,42,82,.16)}
+    50%{box-shadow:0 0 0 7px rgba(229,181,66,0),0 10px 26px rgba(195,148,24,.34)}
+  }
+  .liq-opts{display:none;margin:18px 0 10px;padding:17px 14px;border-radius:16px;background:linear-gradient(180deg,#FFF7D6 0%,#FFFDF4 100%);border:3px solid #C39418;animation:liqPop .35s ease-out,liqGlow 2s ease-in-out infinite}
+  .liq-opts.show{display:block}
+  .liq-opts .liq-title{font-size:16.5px;font-weight:900;color:#0F2A52;margin-bottom:12px;display:flex;align-items:center;gap:6px;letter-spacing:-.02em}
+  .liq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .liq-btn{appearance:none;text-align:left;padding:13px 12px;border-radius:13px;border:2px solid #A8B5CC;background:#fff;cursor:pointer;font:inherit;box-shadow:0 2px 6px rgba(15,42,82,.06);transition:border-color .15s,background .15s,box-shadow .15s,transform .12s}
+  .liq-btn .lt{display:flex;align-items:center;justify-content:space-between;gap:5px;font-size:15.5px;font-weight:900;color:#1E2839;line-height:1.3}
+  .liq-btn .rec{display:inline-block;padding:3px 7px;border-radius:6px;font-size:11.5px;font-weight:900;background:#0F2A52;color:#FFD86B;white-space:nowrap}
+  .liq-btn .ls{display:block;font-size:14.5px;font-weight:800;color:#3E4A5E;margin-top:6px;line-height:1.4;font-variant-numeric:tabular-nums}
+  .liq-btn .ln{display:block;font-size:12.5px;font-weight:700;color:#8B4513;margin-top:5px;line-height:1.35}
+  .liq-btn[aria-pressed="true"]{border:3px solid #0F2A52;background:#FFF0B8;box-shadow:0 5px 14px rgba(15,42,82,.22);transform:translateY(-1px)}
+  .liq-btn[aria-pressed="true"] .lt{color:#0F2A52}
+  .liq-btn[aria-pressed="true"] .ls{color:#0F2A52}
+
+  /* 안내 카드 */
+  .notes-card ul{margin:12px 0 0;padding:0;list-style:none}
+  .notes-card li{position:relative;padding-left:16px;font-size:15px;line-height:1.8;color:#4F586C;word-break:keep-all}
+  .notes-card li+li{margin-top:9px}
+  .notes-card li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+
+  /* 하단 고정 요약 */
+  .sticky{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:40;
+    width:100%;max-width:760px;display:none;
+    padding:11px 18px calc(11px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.97);
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    border-top:2px solid var(--gold);
+    box-shadow:0 -12px 28px -20px rgba(14,29,52,.55);
+  }
+  .sticky.on{display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .sticky .sl{display:block;font-size:13px;font-weight:700;color:#5A6478;margin-bottom:2px;letter-spacing:.02em}
+  .sticky .sv{font-size:22px;font-weight:800;color:var(--navy);letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .sticky .sv .u{font-size:14px;color:#6B5320;font-weight:700;margin-left:2px}
+  .sticky .right{text-align:right;flex:0 0 auto}
+  .sticky .right .sv{color:#8A5F0A;font-size:18px}
+  body.hasbar .wrap{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
+  body.hasbar .site-footer{padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+
+  @media (min-width:900px){
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+    .sticky{display:none!important}
+    body.hasbar .wrap{padding-bottom:40px}
+    body.hasbar .site-footer{padding-bottom:34px}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">드림</div>
+      <div>
+        <div class="name">드림 종합법률세무사무소</div>
+        <div class="sub">변호사 김치현</div>
+      </div>
+    </div>
+    <a class="head-tel" href="tel:02-6956-8141">02-6956-8141</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <h1>개인회생 <span class="accent">탕감 계산기</span></h1>
+    <p>채무액과 월 소득, 보유 재산(청산가치)을 넣으면 36개월 기준으로 예상 탕감액과 월 변제금을 바로 보여 드립니다.</p>
+    <div class="hero-foot">
+      <p class="meta-line"><span class="pill">참고용 추정</span> 입력하는 즉시 계산됩니다</p>
+      <button class="reset" type="button" id="resetBtn">초기화</button>
+    </div>
+  </section>
+
+  <div class="layout">
+    <!-- 입력 -->
+    <section class="card" aria-labelledby="inTitle">
+      <div class="card-head"><h2 id="inTitle"><span class="dot" aria-hidden="true"></span>1 · 정보 입력</h2></div>
+
+      <div class="field">
+        <label class="label" for="debt">총 채무액</label>
+        <div class="money">
+          <input id="debt" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" placeholder="예: 50,000,000" aria-describedby="debtHint">
+          <span class="won">원</span>
+        </div>
+        <div class="hint" id="debtHint"></div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="income">월 실수령 소득</label>
+        <div class="money">
+          <input id="income" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" placeholder="예: 2,500,000" aria-describedby="incomeHint">
+          <span class="won">원</span>
+        </div>
+        <div class="hint" id="incomeHint">세금·4대보험을 뺀 실제 통장에 들어오는 금액</div>
+      </div>
+
+      <div class="field">
+        <div class="label" id="famLabel">부양가족 수 <span class="opt">본인 포함 · 0.5명 단위</span></div>
+        <div class="stepper" role="group" aria-labelledby="famLabel">
+          <button class="step" type="button" id="famMinus" aria-label="부양가족 수 줄이기">−</button>
+          <span class="step-val" id="famVal" aria-live="polite">2<small>명</small></span>
+          <button class="step" type="button" id="famPlus" aria-label="부양가족 수 늘리기">+</button>
+        </div>
+        <div class="hint" id="famHint">공동부양·맞벌이 등은 실무상 1.5명·2.5명처럼 0.5명 단위로 조정할 수 있습니다</div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="living">월 생계비 <span class="tag" id="livingTag">자동 제안</span></label>
+        <div class="money">
+          <input id="living" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" placeholder="예: 2,519,575" aria-describedby="livingHint">
+          <span class="won">원</span>
+        </div>
+        <div class="hint" id="livingHint"></div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="asset">보유 재산 <span class="opt">선택 · 청산가치</span></label>
+        <div class="money">
+          <input id="asset" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" autocapitalize="off" spellcheck="false" placeholder="선택 입력" aria-describedby="assetHint">
+          <span class="won">원</span>
+        </div>
+        <div class="hint" id="assetHint">예금·차량 등 재산에서 담보·최우선변제를 뺀 가액</div>
+      </div>
+    </section>
+
+    <div class="stack">
+      <!-- 결과 -->
+      <section class="card result" aria-labelledby="outTitle">
+        <div class="card-head">
+          <h2 id="outTitle"><span class="dot" aria-hidden="true"></span>2 · 예상 결과</h2>
+          <span class="badge" id="outPeriod">36개월 기준</span>
+        </div>
+
+        <div class="hero-amount" aria-live="polite">
+          <span class="res-label">예상 탕감액</span>
+          <span class="amount" id="forgiveNum">0<span class="u">만 원</span></span>
+          <div class="exact" id="forgiveExact"></div>
+        </div>
+
+        <div class="kv">
+          <span class="k">월 변제 예정액<small id="availSub">월 가용소득 기준</small></span>
+          <span class="v"><span id="availNum">0</span><span class="u">원</span></span>
+        </div>
+        <div class="liq-opts" id="liqOpts" role="group" aria-label="청산가치 상환 방식 선택">
+          <div class="liq-title">✨ 상환 방식 선택 (청산가치 반영)</div>
+          <div class="liq-grid">
+            <button class="liq-btn" type="button" id="liqExtend" aria-pressed="true">
+              <span class="lt"><span>기간 연장</span><span class="rec" id="liqExtendRec">추천</span></span>
+              <span class="ls" id="liqExtendSub">월 가용소득 · 약 —개월</span>
+              <span class="ln" id="liqExtendNote">월 부담 유지 · 최대 탕감</span>
+            </button>
+            <button class="liq-btn" type="button" id="liqFixed36" aria-pressed="false">
+              <span class="lt"><span>36개월 단축</span><span class="rec" id="liqFixedRec" style="display:none">추천</span></span>
+              <span class="ls" id="liqFixedSub">월 —원 · 36개월</span>
+              <span class="ln" id="liqFixedNote">월 부담↑ · 탕감·청산 조율 필요</span>
+            </button>
+          </div>
+        </div>
+        <div class="kv">
+          <span class="k">총 변제 예정액</span>
+          <span class="v" id="totalNum">0<span class="u">만 원</span></span>
+        </div>
+        <div class="kv" id="assetRow" style="display:none">
+          <span class="k">재산 청산가치</span>
+          <span class="v" id="assetNum">0<span class="u">만 원</span></span>
+        </div>
+
+        <div class="rate">
+          <div class="rate-top">
+            <span class="k">채무 대비 변제율</span>
+            <span class="p" id="rateNum">—</span>
+          </div>
+          <div class="track" role="img" aria-label="변제율 막대" id="track"><div class="fill" id="fill"></div></div>
+          <div class="scale"><span>0%</span><span>50%</span><span>100%</span></div>
+        </div>
+
+        <div class="calc" id="calcLine"></div>
+        <div class="msg" id="msg" role="status"></div>
+      </section>
+
+      <p class="consult-note"><span class="mark" aria-hidden="true">※</span><span>본 결과는 참고용 모의계산이며 법원이 정할 변제금액을 예측한 것이 아닙니다. 이자·청산가치·특별한 사정에 따라 달라지므로 <b>정확한 가능 여부는 상담을 통해 확인해 주세요.</b></span></p>
+
+      <div class="cta">
+        <p class="cta-lead">추가 생계비(월세·의료비·교육비)나 재산 공제 반영 시 실제 변제금과 탕감 조건이 달라질 수 있어요.<br>전담 상담으로 내 기준에 맞는 최적의 안을 확인해 보세요.</p>
+        <a class="cta-apply" id="ctaForm" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">
+          <span class="cta-hand" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/></svg></span>
+          <span class="cta-txt"><span class="cta-brand">드림 종합법률세무사무소</span><span class="cta-act">상담 신청하기</span></span>
+        </a>
+        <a class="cta-tel" href="tel:02-6956-8141"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>전화 상담 02-6956-8141</a>
+        <p class="cta-note">입력한 조건이 신청서에 자동으로 채워집니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 안내 -->
+  <section class="card notes-card" aria-label="안내">
+    <h2><span class="dot" aria-hidden="true"></span>안내</h2>
+    <ul>
+      <li>본 계산은 참고용 추정이며, 실제 인가 여부와 변제금액은 법원의 결정에 따릅니다.</li>
+      <li>입력하신 정보는 서버로 전송되지 않고 이 화면(브라우저) 안에서만 계산됩니다.</li>
+      <li>주민등록번호 등 민감한 정보는 입력받지 않습니다.</li>
+      <li>월 생계비 제안값은 2026년 기준중위소득 60%로, 개인회생 생계비(최저생계비) 산정 기준입니다. 주거비·교육비·의료비 등 추가 생계비와 법원 결정에 따라 달라질 수 있습니다.</li>
+      <li>2026년 기준중위소득 60%(월): 1인 1,538,543원 · 2인 2,519,575원 · 3인 3,215,422원 · 4인 3,896,843원 · 5인 4,534,031원 · 6인 5,133,571원</li>
+    </ul>
+  </section>
+
+  <p class="disclaimer"><b>안내.</b> 본 계산기는 참고용 모의 계산이며, 재산·소득·부양가족 상황에 따라 실제 변제금액과 인가 여부가 달라질 수 있습니다. 계산 결과는 참고용이며 법률 자문을 대신하지 않습니다.</p>
+
+  <div class="sticky" id="sticky" aria-hidden="true">
+    <div>
+      <span class="sl">예상 탕감액</span>
+      <span class="sv" id="sbForgive">0<span class="u">만 원</span></span>
+    </div>
+    <div class="right">
+      <span class="sl">채무 대비 변제율</span>
+      <span class="sv" id="sbRate">0.0%</span>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="inner">
+    <div class="f-name">드림 종합법률세무사무소</div>
+    <div>변호사 김치현</div>
+    <div class="f-line">서울특별시 성동구 왕십리로 58, 서울숲포휴 5층 518호</div>
+    <div class="f-line">대표전화 <a href="tel:02-6956-8141">02-6956-8141</a></div>
+    <div class="f-copy">본 계산기는 참고용 모의 계산이며, 실제 인가 여부와 변제금액은 법원의 결정에 따릅니다.</div>
+  </div>
+</footer>
+
+<!-- 하단 고정 상담 버튼 (스크롤해도 화면 하단에 붙어 따라다님 · 본문 신청 버튼과 같은 링크) -->
+<a class="float-cta" id="floatCta" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener">
+  <span class="fc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></span>
+  <span class="fc-txt">개인회생 상담 신청하기</span>
+</a>
+
+<script>
+(function(){
+  "use strict";
+
+  var S = {
+    debt: 0,
+    income: 0,
+    fam: 2,
+    living: 2519575,
+    livingEdited: false,
+    months: 36,
+    asset: 0,
+    liqMode: 'extend'
+  };
+
+  var $ = function(id){ return document.getElementById(id); };
+  var debtEl = $('debt'), incomeEl = $('income'), livingEl = $('living'), assetEl = $('asset');
+  var ctaForm = $('ctaForm');
+
+  /* ── 상담 신청 폼 미리 채우기 ──
+     구글 폼 '드림 종합법률세무사무소 상담 신청'의 미리 채우기(entry) 값.
+     1781242964 = 상담 희망 분야(체크박스, 선택지 값은 한글 텍스트 그대로)
+     559120291  = 간단한 문의 내용 및 연락 편한 시간(장문 텍스트)  */
+  var FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform';
+  var FORM_ENTRY_FIELD = 'entry.1781242964';
+  var FORM_ENTRY_MESSAGE = 'entry.559120291';
+
+  function setCta(field, message){
+    if (!ctaForm) return;
+    ctaForm.href = FORM_BASE + '?usp=pp_url'
+      + '&' + FORM_ENTRY_FIELD + '=' + encodeURIComponent(field)
+      + '&' + FORM_ENTRY_MESSAGE + '=' + encodeURIComponent(message);
+    // 하단 고정 상담 버튼도 본문 신청 버튼과 같은 미리 채우기 링크를 쓴다.
+    var floatCta = $('floatCta');
+    if (floatCta) floatCta.href = ctaForm.href;
+  }
+
+  // 2026년 기준 중위소득 60% = 개인회생 생계비(최저생계비) 산정 기준
+  // 근거: 보건복지부 고시 제2025-135호(2026.1.1. 시행) 2026년 기준 중위소득 × 60%, 원 단위 반올림
+  //       개인회생사건 처리지침 제7조 제2항 — 개시신청 당시 기준 중위소득의 100분의 60
+  // 100% 금액: 1인 2,564,238 / 2인 4,199,292 / 3인 5,359,036 / 4인 6,494,738 / 5인 7,556,719 / 6인 8,555,952
+  var LIVING_2026 = { 1: 1538543, 2: 2519575, 3: 3215422, 4: 3896843, 5: 4534031, 6: 5133571 };
+  function suggest(n){
+    var k = Math.max(1, Math.min(6, Math.round((n || 1) * 2) / 2));
+    var lo = Math.floor(k), hi = Math.ceil(k);
+    if (lo === hi) return LIVING_2026[lo];
+    return Math.round((LIVING_2026[lo] + LIVING_2026[hi]) / 2);
+  }
+  function num(v){ return Number(v || 0).toLocaleString('en-US'); }
+  function toDigits(raw){
+    var d = String(raw || '').replace(/[^0-9]/g, '');
+    d = d.replace(/^0+(?=\d)/, '');
+    return d.slice(0, 12);
+  }
+  function setMoney(el, value){ el.value = value ? num(value) : ''; }
+  function parseDigits(el){ var d = toDigits(el.value); return d ? parseInt(d, 10) : 0; }
+
+  // "3,960만 원" 형태의 조각으로 변환
+  function parts(v){
+    v = Math.max(0, Math.round(v));
+    if (v >= 100000000){
+      var eok = Math.round((v / 100000000) * 10) / 10;
+      return { v: num(eok), u: '억 원' };
+    }
+    if (v >= 10000) return { v: num(Math.round(v / 10000)), u: '만 원' };
+    return { v: num(v), u: '원' };
+  }
+  function put(el, v){
+    var p = parts(v);
+    el.innerHTML = p.v + '<span class="u">' + p.u + '</span>';
+  }
+  function manLabel(v){
+    var p = parts(v);
+    return p.v + p.u;
+  }
+
+  // ── 렌더 ──
+  function render(){
+    var d = S.debt, inc = S.income, liv = S.living, m = 36, asset = S.asset;
+    var incomeError = inc > 0 && liv >= inc;
+    var avail = incomeError ? 0 : Math.max(0, inc - liv);
+    var incomeTotal = avail * m;
+    var liquidationApplied = !incomeError && asset > 0 && asset > incomeTotal;
+    var rawTotal = liquidationApplied ? asset : incomeTotal;
+    var total = d > 0 ? Math.min(d, rawTotal) : rawTotal;
+    var fixedMonthly = Math.ceil(total / m);
+    var exactMonths = (liquidationApplied && avail > 0) ? (total / avail) : m;
+    var estMonths = (liquidationApplied && avail > 0) ? Math.ceil(exactMonths) : m;
+    var isExtend = liquidationApplied && S.liqMode === 'extend' && avail > 0;
+    var monthlyPay = liquidationApplied ? (isExtend ? avail : fixedMonthly) : avail;
+    var forgive = Math.max(0, d - total);
+    var ready = d > 0 && inc > 0 && !incomeError;
+    var rate = ready ? Math.min(100, (total / d) * 100) : null;
+
+    livingEl.classList.toggle('is-error', incomeError);
+    var lh = $('livingHint');
+    if (incomeError){
+      lh.className = 'hint is-error';
+      lh.textContent = inc === liv
+        ? '소득과 생계비가 같습니다 (월 소득이 생계비보다 많아야 계산됩니다)'
+        : '소득보다 생계비가 큽니다 (월 소득이 생계비보다 많아야 계산됩니다)';
+    } else {
+      lh.className = 'hint';
+      var famText = Number.isInteger(S.fam) ? String(S.fam) : S.fam.toFixed(1);
+      lh.innerHTML = S.livingEdited
+        ? '직접 입력하신 금액입니다 · 2026년 기준중위소득 60% <b>' + num(suggest(S.fam)) + '원</b>'
+        : '2026년 기준중위소득 60% (부양가족 ' + famText + '명 기준' + (Number.isInteger(S.fam) ? '' : ' 중간값') + ', 법원 결정에 따라 달라질 수 있음)';
+    }
+
+    // 보유 재산(청산가치) 힌트 — 60개월 초과 시 입력칸 바로 아래 즉시 안내
+    var ah = $('assetHint');
+    if (asset <= 0){
+      ah.className = 'hint';
+      ah.textContent = '예금·차량 등 재산에서 담보·최우선변제를 뺀 가액';
+    } else if (liquidationApplied && avail > 0 && estMonths > 60){
+      ah.className = 'hint is-error';
+      ah.textContent = '약 ' + manLabel(asset) + ' · 가용소득 기준 60개월(최장 기간)을 초과합니다 (약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월 필요 · 월 변제금 상향 또는 재산 처분 상담 필요)';
+    } else if (liquidationApplied){
+      ah.className = 'hint';
+      ah.innerHTML = '약 <b>' + manLabel(asset) + '</b> · 청산가치 보장의 원칙이 적용되었습니다';
+    } else {
+      ah.className = 'hint';
+      ah.innerHTML = '약 <b>' + manLabel(asset) + '</b> · 변제액과 비교해 안내합니다';
+    }
+
+    // 청산가치 상환 방식 선택 UI
+    var liqOpts = $('liqOpts');
+    if (liquidationApplied && avail > 0){
+      liqOpts.classList.add('show');
+      $('liqExtend').setAttribute('aria-pressed', S.liqMode === 'extend' ? 'true' : 'false');
+      $('liqFixed36').setAttribute('aria-pressed', S.liqMode === 'fixed36' ? 'true' : 'false');
+      var mLabel = (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월';
+      var diffPay = Math.max(0, fixedMonthly - avail);
+      var canExtend = estMonths <= 60;
+      $('liqExtendRec').style.display = canExtend ? 'inline-block' : 'none';
+      $('liqFixedRec').style.display = canExtend ? 'none' : 'inline-block';
+      $('liqExtendSub').textContent = '월 ' + num(avail) + '원 · 약 ' + mLabel + (canExtend ? '' : ' (60개월 초과)');
+      $('liqExtendNote').textContent = canExtend ? '월 부담 그대로 · 가장 유리' : '60개월 초과로 재산 처분 등 상담 필요';
+      $('liqFixedSub').textContent = '월 ' + num(fixedMonthly) + '원 · 36개월';
+      $('liqFixedNote').textContent = '월 +' + num(diffPay) + '원 부담↑ (짧은 기간 희망 시 탕감·조율 필요)';
+    } else {
+      liqOpts.classList.remove('show');
+    }
+
+    // 월 변제 예정액
+    if (incomeError){
+      $('availNum').textContent = '—';
+      $('availSub').textContent = '생계비가 월 소득 이상입니다';
+    } else if (liquidationApplied && isExtend){
+      $('availNum').textContent = num(avail);
+      $('availSub').textContent = '기간 연장형 · 월 가용소득 유지 (약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월 상환)';
+    } else if (liquidationApplied){
+      $('availNum').textContent = num(fixedMonthly);
+      $('availSub').textContent = '36개월 단축형 · ' + manLabel(total) + ' ÷ 36개월';
+    } else {
+      $('availNum').textContent = num(monthlyPay);
+      $('availSub').textContent = '월 가용소득 기준';
+    }
+
+    // 탕감액
+    var heroNum = $('forgiveNum');
+    if (incomeError){
+      heroNum.textContent = '계산 불가';
+      heroNum.className = 'amount is-error';
+      $('forgiveExact').textContent = inc === liv
+        ? '소득과 생계비가 같아 월 변제 가능 금액이 없습니다'
+        : '소득보다 생계비가 큽니다 (월 소득이 생계비보다 많아야 계산됩니다)';
+    } else if (ready){
+      put(heroNum, forgive);
+      heroNum.className = 'amount';
+      $('forgiveExact').textContent = '정확히 ' + num(d - total > 0 ? d - total : 0) + '원';
+    } else {
+      heroNum.innerHTML = '—';
+      heroNum.className = 'amount is-empty';
+      $('forgiveExact').textContent = d > 0 ? '월 실수령 소득을 입력해 주세요' : '총 채무액을 입력해 주세요';
+    }
+
+    // 총 변제 예정액
+    if (incomeError){
+      $('totalNum').innerHTML = '—';
+    } else {
+      put($('totalNum'), total);
+    }
+
+    // 재산
+    if (asset > 0){
+      $('assetRow').style.display = 'flex';
+      put($('assetNum'), asset);
+    } else {
+      $('assetRow').style.display = 'none';
+    }
+
+    // 변제율
+    if (rate === null){
+      $('rateNum').textContent = '—';
+      $('rateNum').className = 'p is-empty';
+      $('fill').style.width = '0%';
+    } else {
+      $('rateNum').className = 'p';
+      $('rateNum').textContent = (Math.round(rate * 10) / 10).toFixed(1) + '%';
+      $('fill').style.width = Math.max(0, Math.min(100, rate)) + '%';
+    }
+    $('track').setAttribute('aria-label', '채무 대비 변제율 ' + (rate === null ? '계산 전' : (Math.round(rate*10)/10).toFixed(1) + '%'));
+
+    // 기간 표기
+    $('outPeriod').textContent = isExtend
+      ? (estMonths > 60 ? '60개월 초과 · 조정 필요' : '약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월 기준')
+      : m + '개월 기준';
+
+    // 산식
+    var line = '';
+    if (incomeError){
+      line = '<div class="cl"><span class="cn">!</span><span>월 소득(' + num(inc) + '원) ≤ 월 생계비(' + num(liv) + '원) → <b>가용소득 없음 (계산 불가)</b></span></div>';
+    } else if (inc > 0){
+      var rows = [];
+      rows.push('<div class="cl"><span class="cn">1</span><span>' + num(inc) + '원 − ' + num(liv) + '원 생계비 = <b>' + num(avail) + '원</b> (월 가용소득)</span></div>');
+      rows.push('<div class="cl"><span class="cn">2</span><span>' + num(avail) + '원 × ' + m + '개월 = <b>' + num(incomeTotal) + '원</b> (가용소득 합계)</span></div>');
+      var stepNo = 3;
+      if (liquidationApplied){
+        var modeDesc = isExtend
+          ? '월 ' + num(avail) + '원 × 약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월'
+          : '36개월 × 월 약 ' + num(fixedMonthly) + '원';
+        rows.push('<div class="cl"><span class="cn">' + stepNo + '</span><span>청산가치 보장의 원칙 적용: 보유 재산 ' + num(asset) + '원 &gt; 가용소득 합계 → 총 변제 <b>' + num(total) + '원</b> (' + modeDesc + ')</span></div>');
+        stepNo++;
+      }
+      if (d > 0 && ready){
+        rows.push(total < d
+          ? '<div class="cl"><span class="cn">' + stepNo + '</span><span>' + num(d) + '원 − ' + num(total) + '원 = <b>' + num(forgive) + '원</b> 탕감</span></div>'
+          : '<div class="cl"><span class="cn">' + stepNo + '</span><span>' + num(d) + '원 <b>전액 변제</b> · 탕감 없음</span></div>');
+      }
+      line = rows.join('');
+    } else {
+      line = d > 0 ? '월 소득을 입력하면 계산 과정이 여기에 표시됩니다.' : '금액을 입력하면 계산 과정이 여기에 표시됩니다.';
+    }
+    $('calcLine').innerHTML = line;
+
+    // 안내 문구
+    var msg = $('msg');
+    var text = '', warn = false, isErr = false;
+    if (incomeError){
+      text = (inc === liv ? '소득과 생계비가 같아' : '소득보다 생계비가 커서') + ' 월 변제 가능 금액이 없습니다. 부양가족 수·생계비를 다시 확인하시거나, 개인파산 등 다른 절차를 상담해 주세요.';
+      isErr = true;
+    } else if (d <= 0){
+      text = '';
+    } else if (inc <= 0){
+      text = '월 실수령 소득을 입력하면 예상 탕감액이 계산됩니다.';
+    } else if (liquidationApplied){
+      text = isExtend
+        ? (estMonths > 60
+          ? '청산가치 보장의 원칙에 따라 약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월이 필요해 법정 최장 기간(60개월)을 초과합니다. 일부 재산 처분이나 추가 변제 방안을 상담으로 확인해 주세요.'
+          : '청산가치 보장의 원칙에 따라 월 가용소득(' + num(avail) + '원)을 유지하면서 상환 기간이 약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월로 연장됩니다. 36개월 단축형으로 전환해 비교하실 수 있습니다.')
+        : '청산가치 보장의 원칙에 따라 36개월 기준 월 변제금이 ' + num(fixedMonthly) + '원으로 조정됩니다. 월 부담을 줄이려면 위에서 [기간 연장]을 선택해 보세요.';
+      warn = true;
+    } else if (total >= d){
+      text = '채무 전액을 변제하는 조건이라 예상 탕감액이 0원입니다.';
+    }
+    // 하단 고정 요약
+    var bar = $('sticky');
+    if (ready){
+      put($('sbForgive'), forgive);
+      $('sbRate').textContent = rate === null ? '—' : (Math.round(rate * 10) / 10).toFixed(1) + '%';
+      bar.classList.add('on');
+      document.body.classList.add('hasbar');
+    } else {
+      bar.classList.remove('on');
+      document.body.classList.remove('hasbar');
+    }
+
+    // 상담 신청 링크에 지금 화면의 입력값과 계산 결과를 미리 채운다.
+    var liqPlan = liquidationApplied
+      ? (isExtend
+          ? ' / 선택: 기간 연장형(월 ' + num(avail) + '원 × 약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월)'
+          : ' / 선택: 36개월 단축형(월 ' + num(fixedMonthly) + '원 × 36개월)')
+      : '';
+    var summary = incomeError
+      ? '[개인회생 탕감계산기] 총 채무 ' + num(d) + '원 / 월 소득 ' + num(inc) + '원 / 부양가족 ' + S.fam + '명(생계비 ' + num(liv) + '원) → 생계비가 소득 이상(개인회생·파산 상담 필요)'
+      : ready
+      ? '[개인회생 탕감계산기] 총 채무 ' + num(d) + '원 / 월 소득 ' + num(inc) + '원' +
+        ' / 부양가족 ' + S.fam + '명(생계비 ' + num(liv) + '원) / ' + (isExtend ? '약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) : m) + '개월' +
+        ' / 예상 탕감액 ' + num(forgive) + '원' +
+        (asset > 0 ? ' / 보유 재산 ' + num(asset) + '원' : '') + liqPlan
+      : '[개인회생 탕감계산기] 계산기 입력값 없이 상담 신청';
+    setCta('개인회생·파산 상담', summary);
+
+    msg.textContent = text;
+    msg.className = 'msg' + (text ? ' show' : '') + (isErr ? ' error' : (warn ? ' warn' : ''));
+  }
+
+  // 콤마를 넣어도 커서는 원래 자리에 둔다(가운데 고치기·지우기가 튀지 않게).
+  function formatTyping(el){
+    var raw = el.value;
+    var caret = raw.length;
+    try { if (el.selectionStart != null) caret = el.selectionStart; } catch (e) {}
+    var digitsBefore = raw.slice(0, caret).replace(/[^0-9]/g, '').length;
+    var d = toDigits(raw);
+    var next = d ? num(d) : '';
+    if (next !== raw){
+      el.value = next;
+      var pos = 0, seen = 0;
+      while (pos < next.length && seen < digitsBefore){
+        var c = next.charCodeAt(pos);
+        if (c >= 48 && c <= 57) seen++;
+        pos++;
+      }
+      try { el.setSelectionRange(pos, pos); } catch (e) {}
+    }
+    return d;
+  }
+
+  // ── 입력 처리 ──
+  function bindMoney(el, key, after){
+    el.addEventListener('input', function(){
+      var d = formatTyping(el);
+      S[key] = d ? parseInt(d, 10) : 0;
+      if (after) after();
+      render();
+    });
+    el.addEventListener('change', function(){
+      var d = formatTyping(el);
+      S[key] = d ? parseInt(d, 10) : 0;
+      if (after) after();
+      render();
+    });
+    el.addEventListener('blur', function(){
+      var d = formatTyping(el);
+      el.value = d ? num(d) : '';
+    });
+  }
+
+  bindMoney(debtEl, 'debt', function(){
+    var h = $('debtHint');
+    h.innerHTML = S.debt > 0 ? '약 <b>' + manLabel(S.debt) + '</b>' : '';
+  });
+
+  bindMoney(incomeEl, 'income', function(){
+    var h = $('incomeHint');
+    h.innerHTML = S.income > 0 ? '약 <b>' + manLabel(S.income) + '</b>' : '세금·4대보험을 뺀 실제 통장에 들어오는 금액';
+  });
+
+  bindMoney(livingEl, 'living', function(){
+    S.livingEdited = true;
+    var tag = $('livingTag');
+    tag.textContent = '직접 입력';
+    tag.className = 'tag edit';
+    $('livingHint').innerHTML = '직접 입력하신 금액입니다 · 2026년 기준중위소득 60% <b>' + num(suggest(S.fam)) + '원</b>';
+  });
+
+  bindMoney(assetEl, 'asset', function(){
+    var h = $('assetHint');
+    h.innerHTML = S.asset > 0
+      ? '약 <b>' + manLabel(S.asset) + '</b> · 변제액과 비교해 안내합니다'
+      : '예금·차량 등 재산에서 담보·최우선변제를 뺀 가액';
+  });
+
+  function setFam(n){
+    S.fam = Math.max(1, Math.min(6, Math.round(n * 2) / 2));
+    var famText = Number.isInteger(S.fam) ? String(S.fam) : S.fam.toFixed(1);
+    $('famVal').innerHTML = famText + '<small>명</small>';
+    $('famMinus').disabled = S.fam <= 1;
+    $('famPlus').disabled = S.fam >= 6;
+    if (!S.livingEdited){
+      S.living = suggest(S.fam);
+      setMoney(livingEl, S.living);
+    }
+    var h = $('livingHint');
+    h.innerHTML = S.livingEdited
+      ? '2026년 기준중위소득 60% 제안값 <b>' + num(suggest(S.fam)) + '원</b> · 직접 수정하셨습니다'
+      : '2026년 기준중위소득 60% (부양가족 ' + famText + '명 기준' + (Number.isInteger(S.fam) ? '' : ' 중간값') + ', 법원 결정에 따라 달라질 수 있음)';
+    render();
+  }
+
+  $('famMinus').addEventListener('click', function(){ setFam(S.fam - 0.5); });
+  $('famPlus').addEventListener('click', function(){ setFam(S.fam + 0.5); });
+  $('liqExtend').addEventListener('click', function(){ S.liqMode = 'extend'; render(); });
+  $('liqFixed36').addEventListener('click', function(){ S.liqMode = 'fixed36'; render(); });
+
+  $('resetBtn').addEventListener('click', function(){
+    S.debt = 0; S.income = 0; S.asset = 0; S.liqMode = 'extend';
+    S.fam = 2; S.living = suggest(2); S.livingEdited = false; S.months = 36;
+    setMoney(debtEl, 0); setMoney(incomeEl, 0); setMoney(assetEl, 0);
+    $('debtHint').innerHTML = ''; $('incomeHint').textContent = '세금·4대보험을 뺀 실제 통장에 들어오는 금액';
+    $('assetHint').textContent = '예금·차량 등 재산에서 담보·최우선변제를 뺀 가액';
+    var lt = $('livingTag');
+    lt.textContent = '자동 제안';
+    lt.className = 'tag';
+    setFam(2);
+    render();
+  });
+
+  // 초기 상태
+  setMoney(livingEl, S.living);
+  setFam(2);
+  render();
+})();
+</script>
+</body>
+</html>
