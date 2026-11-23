@@ -491,6 +491,17 @@
   .msg.warn{background:#FFF6EC;border-color:#EFD3B6;color:#6E4413}
   .msg.error{background:#FFF3F3;border-color:#E5A1A1;border-left:5px solid #C93B3B;color:#8B1A1A;font-weight:700}
   .hero-amount .amount.is-error{color:#C93B3B;letter-spacing:-.02em}
+  /* 청산가치 상환 방식 선택 */
+  .liq-opts{display:none;margin:14px 0 4px;padding:12px;border-radius:12px;background:#F7F9FC;border:1.5px solid #DCE3F0}
+  .liq-opts.show{display:block}
+  .liq-opts .liq-title{font-size:13.5px;font-weight:800;color:#1E2839;margin-bottom:8px}
+  .liq-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .liq-btn{appearance:none;text-align:left;padding:10px 11px;border-radius:10px;border:1.5px solid #C9D1E0;background:#fff;cursor:pointer;font:inherit;transition:border-color .15s,background .15s,box-shadow .15s}
+  .liq-btn .lt{display:block;font-size:13.5px;font-weight:800;color:#1E2839;line-height:1.3}
+  .liq-btn .ls{display:block;font-size:12.5px;font-weight:700;color:#5A6478;margin-top:3px;line-height:1.35;font-variant-numeric:tabular-nums}
+  .liq-btn[aria-pressed="true"]{border-color:#C39418;background:#FFF8E8;box-shadow:0 0 0 2px rgba(229,181,66,.22)}
+  .liq-btn[aria-pressed="true"] .lt{color:#0F2A52}
+  .liq-btn[aria-pressed="true"] .ls{color:#8A5F0A}
 
   /* 안내 카드 */
   .notes-card ul{margin:12px 0 0;padding:0;list-style:none}
@@ -627,6 +638,19 @@
           <span class="k">월 변제 예정액<small id="availSub">월 가용소득 기준</small></span>
           <span class="v"><span id="availNum">0</span><span class="u">원</span></span>
         </div>
+        <div class="liq-opts" id="liqOpts" role="group" aria-label="청산가치 상환 방식 선택">
+          <div class="liq-title">상환 방식 선택 (청산가치 반영)</div>
+          <div class="liq-grid">
+            <button class="liq-btn" type="button" id="liqExtend" aria-pressed="true">
+              <span class="lt">기간 연장 (부담 유지)</span>
+              <span class="ls" id="liqExtendSub">월 가용소득 · 약 —개월</span>
+            </button>
+            <button class="liq-btn" type="button" id="liqFixed36" aria-pressed="false">
+              <span class="lt">36개월 단축 (빠른 종료)</span>
+              <span class="ls" id="liqFixedSub">월 —원 · 36개월</span>
+            </button>
+          </div>
+        </div>
         <div class="kv">
           <span class="k">총 변제 예정액</span>
           <span class="v" id="totalNum">0<span class="u">만 원</span></span>
@@ -716,7 +740,8 @@
     living: 2519575,
     livingEdited: false,
     months: 36,
-    asset: 0
+    asset: 0,
+    liqMode: 'extend'
   };
 
   var $ = function(id){ return document.getElementById(id); };
@@ -789,7 +814,11 @@
     var liquidationApplied = !incomeError && asset > 0 && asset > incomeTotal;
     var rawTotal = liquidationApplied ? asset : incomeTotal;
     var total = d > 0 ? Math.min(d, rawTotal) : rawTotal;
-    var monthlyPay = liquidationApplied ? Math.ceil(total / m) : avail;
+    var fixedMonthly = Math.ceil(total / m);
+    var exactMonths = (liquidationApplied && avail > 0) ? (total / avail) : m;
+    var estMonths = (liquidationApplied && avail > 0) ? Math.ceil(exactMonths) : m;
+    var isExtend = liquidationApplied && S.liqMode === 'extend' && avail > 0;
+    var monthlyPay = liquidationApplied ? (isExtend ? avail : fixedMonthly) : avail;
     var forgive = Math.max(0, d - total);
     var ready = d > 0 && inc > 0 && !incomeError;
     var rate = ready ? Math.min(100, (total / d) * 100) : null;
@@ -809,14 +838,29 @@
         : '2026년 기준중위소득 60% (부양가족 ' + famText + '명 기준' + (Number.isInteger(S.fam) ? '' : ' 중간값') + ', 법원 결정에 따라 달라질 수 있음)';
     }
 
+    // 청산가치 상환 방식 선택 UI
+    var liqOpts = $('liqOpts');
+    if (liquidationApplied && avail > 0){
+      liqOpts.classList.add('show');
+      $('liqExtend').setAttribute('aria-pressed', S.liqMode === 'extend' ? 'true' : 'false');
+      $('liqFixed36').setAttribute('aria-pressed', S.liqMode === 'fixed36' ? 'true' : 'false');
+      var mLabel = (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월';
+      $('liqExtendSub').textContent = '월 ' + num(avail) + '원 · 약 ' + mLabel + (estMonths > 60 ? ' (60개월 초과)' : '');
+      $('liqFixedSub').textContent = '월 ' + num(fixedMonthly) + '원 · 36개월';
+    } else {
+      liqOpts.classList.remove('show');
+    }
+
     // 월 변제 예정액
     if (incomeError){
       $('availNum').textContent = '—';
       $('availSub').textContent = '생계비가 월 소득 이상입니다';
+    } else if (liquidationApplied && isExtend){
+      $('availNum').textContent = num(avail);
+      $('availSub').textContent = '기간 연장형 · 월 가용소득 유지 (약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월 상환)';
     } else if (liquidationApplied){
-      var estMonths = avail > 0 ? Math.ceil(total / avail) : null;
-      $('availNum').textContent = num(monthlyPay);
-      $('availSub').textContent = manLabel(total) + ' ÷ 36개월 (현재 가용소득 월 ' + num(avail) + '원 기준 시 ' + (estMonths ? '약 ' + estMonths + '개월' : '기간 조정 필요') + ')';
+      $('availNum').textContent = num(fixedMonthly);
+      $('availSub').textContent = '36개월 단축형 · ' + manLabel(total) + ' ÷ 36개월';
     } else {
       $('availNum').textContent = num(monthlyPay);
       $('availSub').textContent = '월 가용소득 기준';
@@ -868,7 +912,9 @@
     $('track').setAttribute('aria-label', '채무 대비 변제율 ' + (rate === null ? '계산 전' : (Math.round(rate*10)/10).toFixed(1) + '%'));
 
     // 기간 표기
-    $('outPeriod').textContent = m + '개월 기준';
+    $('outPeriod').textContent = isExtend
+      ? '약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월 기준'
+      : m + '개월 기준';
 
     // 산식
     var line = '';
@@ -880,7 +926,10 @@
       rows.push('<div class="cl"><span class="cn">2</span><span>' + num(avail) + '원 × ' + m + '개월 = <b>' + num(incomeTotal) + '원</b> (가용소득 합계)</span></div>');
       var stepNo = 3;
       if (liquidationApplied){
-        rows.push('<div class="cl"><span class="cn">' + stepNo + '</span><span>청산가치 보장의 원칙 적용: 보유 재산 ' + num(asset) + '원 &gt; 가용소득 합계 → 총 변제 <b>' + num(total) + '원</b> (월 약 ' + num(monthlyPay) + '원)</span></div>');
+        var modeDesc = isExtend
+          ? '월 ' + num(avail) + '원 × 약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월'
+          : '36개월 × 월 약 ' + num(fixedMonthly) + '원';
+        rows.push('<div class="cl"><span class="cn">' + stepNo + '</span><span>청산가치 보장의 원칙 적용: 보유 재산 ' + num(asset) + '원 &gt; 가용소득 합계 → 총 변제 <b>' + num(total) + '원</b> (' + modeDesc + ')</span></div>');
         stepNo++;
       }
       if (d > 0 && ready){
@@ -905,7 +954,11 @@
     } else if (inc <= 0){
       text = '월 실수령 소득을 입력하면 예상 탕감액이 계산됩니다.';
     } else if (liquidationApplied){
-      text = '청산가치 보장의 원칙에 따라 총 변제 예정액이 보유 재산(' + manLabel(asset) + ') 이상으로 조정되었습니다. 가용소득만으로 부족한 경우 변제기간 연장이나 재산 처분 등이 검토될 수 있습니다.';
+      text = isExtend
+        ? (estMonths > 60
+          ? '청산가치 보장의 원칙에 따라 약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월이 필요해 법정 최장 기간(60개월)을 초과합니다. 일부 재산 처분이나 추가 변제 방안을 상담으로 확인해 주세요.'
+          : '청산가치 보장의 원칙에 따라 월 가용소득(' + num(avail) + '원)을 유지하면서 상환 기간이 약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월로 연장됩니다. 36개월 단축형으로 전환해 비교하실 수 있습니다.')
+        : '청산가치 보장의 원칙에 따라 36개월 기준 월 변제금이 ' + num(fixedMonthly) + '원으로 조정됩니다. 월 부담을 줄이려면 위에서 [기간 연장]을 선택해 보세요.';
       warn = true;
     } else if (total >= d){
       text = '채무 전액을 변제하는 조건이라 예상 탕감액이 0원입니다.';
@@ -923,13 +976,18 @@
     }
 
     // 상담 신청 링크에 지금 화면의 입력값과 계산 결과를 미리 채운다.
+    var liqPlan = liquidationApplied
+      ? (isExtend
+          ? ' / 선택: 기간 연장형(월 ' + num(avail) + '원 × 약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월)'
+          : ' / 선택: 36개월 단축형(월 ' + num(fixedMonthly) + '원 × 36개월)')
+      : '';
     var summary = incomeError
       ? '[개인회생 탕감계산기] 총 채무 ' + num(d) + '원 / 월 소득 ' + num(inc) + '원 / 부양가족 ' + S.fam + '명(생계비 ' + num(liv) + '원) → 생계비가 소득 이상(개인회생·파산 상담 필요)'
       : ready
       ? '[개인회생 탕감계산기] 총 채무 ' + num(d) + '원 / 월 소득 ' + num(inc) + '원' +
-        ' / 부양가족 ' + S.fam + '명(생계비 ' + num(liv) + '원) / ' + m + '개월' +
+        ' / 부양가족 ' + S.fam + '명(생계비 ' + num(liv) + '원) / ' + (isExtend ? '약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) : m) + '개월' +
         ' / 예상 탕감액 ' + num(forgive) + '원' +
-        (asset > 0 ? ' / 보유 재산 ' + num(asset) + '원' : '')
+        (asset > 0 ? ' / 보유 재산 ' + num(asset) + '원' : '') + liqPlan
       : '[개인회생 탕감계산기] 계산기 입력값 없이 상담 신청';
     setCta('개인회생·파산 상담', summary);
 
@@ -1022,9 +1080,11 @@
 
   $('famMinus').addEventListener('click', function(){ setFam(S.fam - 0.5); });
   $('famPlus').addEventListener('click', function(){ setFam(S.fam + 0.5); });
+  $('liqExtend').addEventListener('click', function(){ S.liqMode = 'extend'; render(); });
+  $('liqFixed36').addEventListener('click', function(){ S.liqMode = 'fixed36'; render(); });
 
   $('resetBtn').addEventListener('click', function(){
-    S.debt = 0; S.income = 0; S.asset = 0;
+    S.debt = 0; S.income = 0; S.asset = 0; S.liqMode = 'extend';
     S.fam = 2; S.living = suggest(2); S.livingEdited = false; S.months = 36;
     setMoney(debtEl, 0); setMoney(incomeEl, 0); setMoney(assetEl, 0);
     $('debtHint').innerHTML = ''; $('incomeHint').textContent = '세금·4대보험을 뺀 실제 통장에 들어오는 금액';
