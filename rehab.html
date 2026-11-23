@@ -431,6 +431,8 @@
   }
   .money input::placeholder{color:#8B95A8;font-weight:600;font-size:17px}
   .money input:focus{border-color:#C39418;box-shadow:0 0 0 3px rgba(229,181,66,.28);background:#fff}
+  .money input.is-error{border-color:#C93B3B;background:#FFF7F7;color:#9B1C1C}
+  .money input.is-error:focus{border-color:#C93B3B;box-shadow:0 0 0 3px rgba(201,59,59,.2)}
   .money .won{position:absolute;right:15px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:800;color:#4F586C;pointer-events:none}
   .hint{margin-top:9px;font-size:14.5px;line-height:1.65;color:#5A6478;min-height:1.65em}
   .hint b{color:#8A5F0A;font-weight:800}
@@ -486,6 +488,8 @@
   .msg{margin-top:14px;padding:13px 15px;border-radius:12px;font-size:15px;line-height:1.7;background:#F4F6FA;border:1px solid var(--line);color:#414B60;display:none}
   .msg.show{display:block}
   .msg.warn{background:#FFF6EC;border-color:#EFD3B6;color:#6E4413}
+  .msg.error{background:#FFF3F3;border-color:#E5A1A1;border-left:5px solid #C93B3B;color:#8B1A1A;font-weight:700}
+  .hero-amount .amount.is-error{color:#C93B3B;letter-spacing:-.02em}
 
   /* 안내 카드 */
   .notes-card ul{margin:12px 0 0;padding:0;list-style:none}
@@ -775,25 +779,37 @@
   // ── 렌더 ──
   function render(){
     var d = S.debt, inc = S.income, liv = S.living, m = 36, asset = S.asset;
-    var avail = Math.max(0, inc - liv);
+    var incomeError = inc > 0 && liv >= inc;
+    var avail = incomeError ? 0 : Math.max(0, inc - liv);
     var incomeTotal = avail * m;
-    var liquidationApplied = asset > 0 && asset > incomeTotal;
+    var liquidationApplied = !incomeError && asset > 0 && asset > incomeTotal;
     var rawTotal = liquidationApplied ? asset : incomeTotal;
     var total = d > 0 ? Math.min(d, rawTotal) : rawTotal;
     var monthlyPay = liquidationApplied ? Math.ceil(total / m) : avail;
     var forgive = Math.max(0, d - total);
-    var ready = d > 0 && inc > 0;
+    var ready = d > 0 && inc > 0 && !incomeError;
     var rate = ready ? Math.min(100, (total / d) * 100) : null;
 
+    livingEl.classList.toggle('is-error', incomeError);
+
     // 월 변제 예정액
-    $('availNum').textContent = num(monthlyPay);
-    $('availSub').textContent = liquidationApplied
-      ? '청산가치 보장의 원칙 반영 (가용소득 ' + num(avail) + '원)'
-      : '월 가용소득 기준';
+    if (incomeError){
+      $('availNum').textContent = '—';
+      $('availSub').textContent = '생계비가 월 소득 이상입니다';
+    } else {
+      $('availNum').textContent = num(monthlyPay);
+      $('availSub').textContent = liquidationApplied
+        ? '청산가치 보장의 원칙 반영 (가용소득 ' + num(avail) + '원)'
+        : '월 가용소득 기준';
+    }
 
     // 탕감액
     var heroNum = $('forgiveNum');
-    if (ready){
+    if (incomeError){
+      heroNum.textContent = '계산 불가';
+      heroNum.className = 'amount is-error';
+      $('forgiveExact').textContent = '월 소득이 생계비보다 많아야 개인회생 변제금 계산이 가능합니다';
+    } else if (ready){
       put(heroNum, forgive);
       heroNum.className = 'amount';
       $('forgiveExact').textContent = '정확히 ' + num(d - total > 0 ? d - total : 0) + '원';
@@ -804,7 +820,11 @@
     }
 
     // 총 변제 예정액
-    put($('totalNum'), total);
+    if (incomeError){
+      $('totalNum').innerHTML = '—';
+    } else {
+      put($('totalNum'), total);
+    }
 
     // 재산
     if (asset > 0){
@@ -831,7 +851,9 @@
 
     // 산식
     var line = '';
-    if (inc > 0){
+    if (incomeError){
+      line = '<div class="cl"><span class="cn">!</span><span>월 소득(' + num(inc) + '원) ≤ 월 생계비(' + num(liv) + '원) → <b>가용소득 없음 (계산 불가)</b></span></div>';
+    } else if (inc > 0){
       var rows = [];
       rows.push('<div class="cl"><span class="cn">1</span><span>' + num(inc) + '원 − ' + num(liv) + '원 생계비 = <b>' + num(avail) + '원</b> (월 가용소득)</span></div>');
       rows.push('<div class="cl"><span class="cn">2</span><span>' + num(avail) + '원 × ' + m + '개월 = <b>' + num(incomeTotal) + '원</b> (가용소득 합계)</span></div>');
@@ -853,17 +875,14 @@
 
     // 안내 문구
     var msg = $('msg');
-    var text = '', warn = false;
-    if (d <= 0){
+    var text = '', warn = false, isErr = false;
+    if (incomeError){
+      text = '오류: 월 생계비(' + num(liv) + '원)가 월 실수령 소득(' + num(inc) + '원) 이상이어서 월 변제 가능 금액이 없습니다. 부양가족 수·생계비를 다시 확인하시거나, 개인파산 등 다른 절차를 상담해 주세요.';
+      isErr = true;
+    } else if (d <= 0){
       text = '';
     } else if (inc <= 0){
       text = '월 실수령 소득을 입력하면 예상 탕감액이 계산됩니다.';
-    } else if (avail <= 0 && !liquidationApplied){
-      text = '생계비가 소득보다 많아 월 가용소득이 0원입니다. 생계비를 조정하거나 소득을 다시 확인해 주세요.';
-      warn = true;
-    } else if (avail <= 0 && liquidationApplied){
-      text = '월 가용소득이 0원이나 보유 재산(청산가치 ' + manLabel(asset) + ') 기준이 적용되었습니다. 실제 변제 가능 여부는 상담으로 확인해 주세요.';
-      warn = true;
     } else if (liquidationApplied){
       text = '청산가치 보장의 원칙에 따라 총 변제 예정액이 보유 재산(' + manLabel(asset) + ') 이상으로 조정되었습니다. 가용소득만으로 부족한 경우 변제기간 연장이나 재산 처분 등이 검토될 수 있습니다.';
       warn = true;
@@ -883,7 +902,9 @@
     }
 
     // 상담 신청 링크에 지금 화면의 입력값과 계산 결과를 미리 채운다.
-    var summary = ready
+    var summary = incomeError
+      ? '[개인회생 탕감계산기] 총 채무 ' + num(d) + '원 / 월 소득 ' + num(inc) + '원 / 부양가족 ' + S.fam + '명(생계비 ' + num(liv) + '원) → 생계비가 소득 이상(개인회생·파산 상담 필요)'
+      : ready
       ? '[개인회생 탕감계산기] 총 채무 ' + num(d) + '원 / 월 소득 ' + num(inc) + '원' +
         ' / 부양가족 ' + S.fam + '명(생계비 ' + num(liv) + '원) / ' + m + '개월' +
         ' / 예상 탕감액 ' + num(forgive) + '원' +
@@ -892,7 +913,7 @@
     setCta('개인회생·파산 상담', summary);
 
     msg.textContent = text;
-    msg.className = 'msg' + (text ? ' show' : '') + (warn ? ' warn' : '');
+    msg.className = 'msg' + (text ? ' show' : '') + (isErr ? ' error' : (warn ? ' warn' : ''));
   }
 
   // 콤마를 넣어도 커서는 원래 자리에 둔다(가운데 고치기·지우기가 튀지 않게).
