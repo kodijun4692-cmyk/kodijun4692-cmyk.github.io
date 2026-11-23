@@ -436,6 +436,7 @@
   .money .won{position:absolute;right:15px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:800;color:#4F586C;pointer-events:none}
   .hint{margin-top:9px;font-size:14.5px;line-height:1.65;color:#5A6478;min-height:1.65em}
   .hint b{color:#8A5F0A;font-weight:800}
+  .hint.is-error{color:#C93B3B;font-weight:800}
 
   /* 부양가족 수 스테퍼 */
   .stepper{display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 7px;background:#FBFCFE;border:1.5px solid #C9D1E0;border-radius:12px}
@@ -794,6 +795,19 @@
     var rate = ready ? Math.min(100, (total / d) * 100) : null;
 
     livingEl.classList.toggle('is-error', incomeError);
+    var lh = $('livingHint');
+    if (incomeError){
+      lh.className = 'hint is-error';
+      lh.textContent = inc === liv
+        ? '소득과 생계비가 같습니다 (월 소득이 생계비보다 많아야 계산됩니다)'
+        : '소득보다 생계비가 큽니다 (월 소득이 생계비보다 많아야 계산됩니다)';
+    } else {
+      lh.className = 'hint';
+      var famText = Number.isInteger(S.fam) ? String(S.fam) : S.fam.toFixed(1);
+      lh.innerHTML = S.livingEdited
+        ? '직접 입력하신 금액입니다 · 2026년 기준중위소득 60% <b>' + num(suggest(S.fam)) + '원</b>'
+        : '2026년 기준중위소득 60% (부양가족 ' + famText + '명 기준' + (Number.isInteger(S.fam) ? '' : ' 중간값') + ', 법원 결정에 따라 달라질 수 있음)';
+    }
 
     // 월 변제 예정액
     if (incomeError){
