@@ -1454,6 +1454,7 @@ var CALC = (function () {
 
     // 2. 남양주시: 호평·평내·금곡·일패·이패·삼패·가운·수석·지금·도농동만 과밀억제권역
     var namyangjuOver = ['호평','평내','금곡','일패','이패','삼패','가운','수석','지금','도농'];
+    var namyangjuOverUnique = ['호평','평내','일패','이패','삼패','가운','수석','지금','도농'];
     if (s.indexOf('남양주') !== -1) {
       for (var b = 0; b < namyangjuOver.length; b++) {
         if (s.indexOf(namyangjuOver[b]) !== -1) {
@@ -1463,7 +1464,12 @@ var CALC = (function () {
       if (/(동|읍|면)$/.test(s) || s.indexOf('별내') !== -1 || s.indexOf('다산') !== -1 || s.indexOf('퇴계원') !== -1 || s.indexOf('진접') !== -1 || s.indexOf('화도') !== -1 || s.indexOf('오남') !== -1 || s.indexOf('와부') !== -1) {
         return { mode: 'normal', msg: '남양주시 내 과밀억제권역(호평·평내·금곡·일패·이패·삼패·가운·수석·지금·도농동) 외 지역으로 일반 세율(0.4%)로 선택되었어요. (다산동 일부 옛 지금/도농동 지번은 확인 필요)' };
       }
-      return { mode: null, msg: '남양주시는 동에 따라 다릅니다! 동 이름(예: 남양주 호평동 / 남양주 별내동)까지 입력해 주세요.' };
+      return { mode: null, msg: '남양주시는 동에 따라 다릅니다! 동 이름(예: 남양주 도농동 / 남양주 별내동)까지 입력해 주세요.' };
+    }
+    for (var b2 = 0; b2 < namyangjuOverUnique.length; b2++) {
+      if (s.indexOf(namyangjuOverUnique[b2]) !== -1) {
+        return { mode: 'over', msg: '남양주시 과밀억제권역(' + namyangjuOverUnique[b2] + '동, 3배 중과 1.2%)으로 자동 선택되었어요.' };
+      }
     }
 
     // 3. 시흥시: 반월특수지역(해제지역 포함) 제외
