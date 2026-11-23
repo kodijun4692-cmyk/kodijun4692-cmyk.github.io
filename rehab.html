@@ -12,7 +12,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0E1D34">
-<meta name="description" content="채무액과 월 소득을 넣으면 36개월·60개월 기준 예상 탕감액과 월 변제금을 계산해 보여 드립니다. 드림 종합법률세무사무소 (변호사 김치현).">
+<meta name="description" content="채무액과 월 소득, 보유 재산(청산가치)을 넣으면 36개월 기준 예상 탕감액과 월 변제금을 계산해 보여 드립니다. 드림 종합법률세무사무소 (변호사 김치현).">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230E1D34'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-size='15' font-weight='700' fill='%23E5B542' text-anchor='middle'%3E%EB%93%9C%3C/text%3E%3C/svg%3E">
 <title>개인회생 탕감 계산기 | 드림 종합법률세무사무소</title>
 <style>
@@ -545,7 +545,7 @@
 
   <section class="hero">
     <h1>개인회생 <span class="accent">탕감 계산기</span></h1>
-    <p>채무액과 월 소득을 넣으면 36개월·60개월 기준으로 예상 탕감액과 월 변제금을 바로 보여 드립니다.</p>
+    <p>채무액과 월 소득, 보유 재산(청산가치)을 넣으면 36개월 기준으로 예상 탕감액과 월 변제금을 바로 보여 드립니다.</p>
     <div class="hero-foot">
       <p class="meta-line"><span class="pill">참고용 추정</span> 입력하는 즉시 계산됩니다</p>
       <button class="reset" type="button" id="resetBtn">초기화</button>
@@ -601,14 +601,6 @@
         </div>
         <div class="hint" id="assetHint">예금·차량 등 재산에서 담보·최우선변제를 뺀 가액</div>
       </div>
-
-      <div class="field">
-        <div class="label" id="perLabel">변제 기간</div>
-        <div class="tabs" role="tablist" aria-labelledby="perLabel">
-          <button class="tab" type="button" role="tab" id="tab36" aria-selected="true" data-months="36">36개월<small>3년</small></button>
-          <button class="tab" type="button" role="tab" id="tab60" aria-selected="false" data-months="60">60개월<small>5년</small></button>
-        </div>
-      </div>
     </section>
 
     <div class="stack">
@@ -626,7 +618,7 @@
         </div>
 
         <div class="kv">
-          <span class="k">월 변제 예정액<small>월 가용소득 기준</small></span>
+          <span class="k">월 변제 예정액<small id="availSub">월 가용소득 기준</small></span>
           <span class="v"><span id="availNum">0</span><span class="u">원</span></span>
         </div>
         <div class="kv">
@@ -782,15 +774,22 @@
 
   // ── 렌더 ──
   function render(){
-    var d = S.debt, inc = S.income, liv = S.living, m = S.months, asset = S.asset;
+    var d = S.debt, inc = S.income, liv = S.living, m = 36, asset = S.asset;
     var avail = Math.max(0, inc - liv);
-    var total = avail * m;
+    var incomeTotal = avail * m;
+    var liquidationApplied = asset > 0 && asset > incomeTotal;
+    var rawTotal = liquidationApplied ? asset : incomeTotal;
+    var total = d > 0 ? Math.min(d, rawTotal) : rawTotal;
+    var monthlyPay = liquidationApplied ? Math.ceil(total / m) : avail;
     var forgive = Math.max(0, d - total);
     var ready = d > 0 && inc > 0;
     var rate = ready ? Math.min(100, (total / d) * 100) : null;
 
-    // 월 가용소득
-    $('availNum').textContent = num(avail);
+    // 월 변제 예정액
+    $('availNum').textContent = num(monthlyPay);
+    $('availSub').textContent = liquidationApplied
+      ? '청산가치 보장의 원칙 반영 (가용소득 ' + num(avail) + '원)'
+      : '월 가용소득 기준';
 
     // 탕감액
     var heroNum = $('forgiveNum');
@@ -834,12 +833,17 @@
     var line = '';
     if (inc > 0){
       var rows = [];
-      rows.push('<div class="cl"><span class="cn">1</span><span>' + num(inc) + '원 − ' + num(liv) + '원 생계비 = <b>' + num(avail) + '원</b></span></div>');
-      rows.push('<div class="cl"><span class="cn">2</span><span>' + num(avail) + '원 × ' + m + '개월 = <b>' + num(total) + '원</b></span></div>');
+      rows.push('<div class="cl"><span class="cn">1</span><span>' + num(inc) + '원 − ' + num(liv) + '원 생계비 = <b>' + num(avail) + '원</b> (월 가용소득)</span></div>');
+      rows.push('<div class="cl"><span class="cn">2</span><span>' + num(avail) + '원 × ' + m + '개월 = <b>' + num(incomeTotal) + '원</b> (가용소득 합계)</span></div>');
+      var stepNo = 3;
+      if (liquidationApplied){
+        rows.push('<div class="cl"><span class="cn">' + stepNo + '</span><span>청산가치 보장의 원칙 적용: 보유 재산 ' + num(asset) + '원 &gt; 가용소득 합계 → 총 변제 <b>' + num(total) + '원</b> (월 약 ' + num(monthlyPay) + '원)</span></div>');
+        stepNo++;
+      }
       if (d > 0 && ready){
         rows.push(total < d
-          ? '<div class="cl"><span class="cn">3</span><span>' + num(d) + '원 − ' + num(total) + '원 = <b>' + num(d - total) + '원</b> 탕감</span></div>'
-          : '<div class="cl"><span class="cn">3</span><span>' + num(d) + '원 <b>전액 변제</b> · 탕감 없음</span></div>');
+          ? '<div class="cl"><span class="cn">' + stepNo + '</span><span>' + num(d) + '원 − ' + num(total) + '원 = <b>' + num(forgive) + '원</b> 탕감</span></div>'
+          : '<div class="cl"><span class="cn">' + stepNo + '</span><span>' + num(d) + '원 <b>전액 변제</b> · 탕감 없음</span></div>');
       }
       line = rows.join('');
     } else {
@@ -854,11 +858,14 @@
       text = '';
     } else if (inc <= 0){
       text = '월 실수령 소득을 입력하면 예상 탕감액이 계산됩니다.';
-    } else if (avail <= 0){
+    } else if (avail <= 0 && !liquidationApplied){
       text = '생계비가 소득보다 많아 월 가용소득이 0원입니다. 생계비를 조정하거나 소득을 다시 확인해 주세요.';
       warn = true;
-    } else if (asset > 0 && total < asset){
-      text = '변제 예정액이 재산 청산가치(' + manLabel(asset) + ')보다 적습니다. 실제 인가 시 조정될 수 있습니다.';
+    } else if (avail <= 0 && liquidationApplied){
+      text = '월 가용소득이 0원이나 보유 재산(청산가치 ' + manLabel(asset) + ') 기준이 적용되었습니다. 실제 변제 가능 여부는 상담으로 확인해 주세요.';
+      warn = true;
+    } else if (liquidationApplied){
+      text = '청산가치 보장의 원칙에 따라 총 변제 예정액이 보유 재산(' + manLabel(asset) + ') 이상으로 조정되었습니다. 가용소득만으로 부족한 경우 변제기간 연장이나 재산 처분 등이 검토될 수 있습니다.';
       warn = true;
     } else if (total >= d){
       text = '채무 전액을 변제하는 조건이라 예상 탕감액이 0원입니다.';
@@ -973,16 +980,6 @@
   $('famMinus').addEventListener('click', function(){ setFam(S.fam - 1); });
   $('famPlus').addEventListener('click', function(){ setFam(S.fam + 1); });
 
-  Array.prototype.forEach.call(document.querySelectorAll('.tab'), function(t){
-    t.addEventListener('click', function(){
-      Array.prototype.forEach.call(document.querySelectorAll('.tab'), function(o){
-        o.setAttribute('aria-selected', o === t ? 'true' : 'false');
-      });
-      S.months = parseInt(t.getAttribute('data-months'), 10);
-      render();
-    });
-  });
-
   $('resetBtn').addEventListener('click', function(){
     S.debt = 0; S.income = 0; S.asset = 0;
     S.fam = 2; S.living = suggest(2); S.livingEdited = false; S.months = 36;
@@ -992,9 +989,6 @@
     var lt = $('livingTag');
     lt.textContent = '자동 제안';
     lt.className = 'tag';
-    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function(o){
-      o.setAttribute('aria-selected', o.id === 'tab36' ? 'true' : 'false');
-    });
     setFam(2);
     render();
   });
