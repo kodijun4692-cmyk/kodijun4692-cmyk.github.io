@@ -580,12 +580,13 @@
       </div>
 
       <div class="field">
-        <div class="label" id="famLabel">부양가족 수 <span class="opt">본인 포함</span></div>
+        <div class="label" id="famLabel">부양가족 수 <span class="opt">본인 포함 · 0.5명 단위</span></div>
         <div class="stepper" role="group" aria-labelledby="famLabel">
           <button class="step" type="button" id="famMinus" aria-label="부양가족 수 줄이기">−</button>
           <span class="step-val" id="famVal" aria-live="polite">2<small>명</small></span>
           <button class="step" type="button" id="famPlus" aria-label="부양가족 수 늘리기">+</button>
         </div>
+        <div class="hint" id="famHint">공동부양·맞벌이 등은 실무상 1.5명·2.5명처럼 0.5명 단위로 조정할 수 있습니다</div>
       </div>
 
       <div class="field">
@@ -745,8 +746,10 @@
   // 100% 금액: 1인 2,564,238 / 2인 4,199,292 / 3인 5,359,036 / 4인 6,494,738 / 5인 7,556,719 / 6인 8,555,952
   var LIVING_2026 = { 1: 1538543, 2: 2519575, 3: 3215422, 4: 3896843, 5: 4534031, 6: 5133571 };
   function suggest(n){
-    var k = Math.max(1, Math.min(6, n || 1));
-    return LIVING_2026[k];
+    var k = Math.max(1, Math.min(6, Math.round((n || 1) * 2) / 2));
+    var lo = Math.floor(k), hi = Math.ceil(k);
+    if (lo === hi) return LIVING_2026[lo];
+    return Math.round((LIVING_2026[lo] + LIVING_2026[hi]) / 2);
   }
   function num(v){ return Number(v || 0).toLocaleString('en-US'); }
   function toDigits(raw){
@@ -796,11 +799,13 @@
     if (incomeError){
       $('availNum').textContent = '—';
       $('availSub').textContent = '생계비가 월 소득 이상입니다';
+    } else if (liquidationApplied){
+      var estMonths = avail > 0 ? Math.ceil(total / avail) : null;
+      $('availNum').textContent = num(monthlyPay);
+      $('availSub').textContent = manLabel(total) + ' ÷ 36개월 (현재 가용소득 월 ' + num(avail) + '원 기준 시 ' + (estMonths ? '약 ' + estMonths + '개월' : '기간 조정 필요') + ')';
     } else {
       $('availNum').textContent = num(monthlyPay);
-      $('availSub').textContent = liquidationApplied
-        ? '청산가치 보장의 원칙 반영 (가용소득 ' + num(avail) + '원)'
-        : '월 가용소득 기준';
+      $('availSub').textContent = '월 가용소득 기준';
     }
 
     // 탕감액
@@ -983,8 +988,9 @@
   });
 
   function setFam(n){
-    S.fam = Math.max(1, Math.min(6, n));
-    $('famVal').innerHTML = S.fam + '<small>명</small>';
+    S.fam = Math.max(1, Math.min(6, Math.round(n * 2) / 2));
+    var famText = Number.isInteger(S.fam) ? String(S.fam) : S.fam.toFixed(1);
+    $('famVal').innerHTML = famText + '<small>명</small>';
     $('famMinus').disabled = S.fam <= 1;
     $('famPlus').disabled = S.fam >= 6;
     if (!S.livingEdited){
@@ -994,12 +1000,12 @@
     var h = $('livingHint');
     h.innerHTML = S.livingEdited
       ? '2026년 기준중위소득 60% 제안값 <b>' + num(suggest(S.fam)) + '원</b> · 직접 수정하셨습니다'
-      : '2026년 기준중위소득 60% (부양가족 ' + S.fam + '명 기준, 법원 결정에 따라 달라질 수 있음)';
+      : '2026년 기준중위소득 60% (부양가족 ' + famText + '명 기준' + (Number.isInteger(S.fam) ? '' : ' 중간값') + ', 법원 결정에 따라 달라질 수 있음)';
     render();
   }
 
-  $('famMinus').addEventListener('click', function(){ setFam(S.fam - 1); });
-  $('famPlus').addEventListener('click', function(){ setFam(S.fam + 1); });
+  $('famMinus').addEventListener('click', function(){ setFam(S.fam - 0.5); });
+  $('famPlus').addEventListener('click', function(){ setFam(S.fam + 0.5); });
 
   $('resetBtn').addEventListener('click', function(){
     S.debt = 0; S.income = 0; S.asset = 0;
