@@ -258,7 +258,11 @@
 
   /* ---------- 상담 신청 CTA (계산기 3종 공통) ---------- */
   .cta{margin:6px 0 0}
-  .cta .cta-lead{font-size:15px;color:#525C70;text-align:center;margin:0 0 14px;line-height:1.6;font-weight:600}
+  @keyframes ctaTwinkle{
+    0%,100%{color:#C93B3B;text-shadow:0 0 0 rgba(201,59,59,0);box-shadow:0 0 0 0 rgba(201,59,59,.28)}
+    50%{color:#F01414;text-shadow:0 0 10px rgba(240,20,20,.38);box-shadow:0 0 0 6px rgba(201,59,59,0)}
+  }
+  .cta .cta-lead{font-size:15.5px;color:#C93B3B;text-align:center;margin:0 0 14px;line-height:1.6;font-weight:800;padding:11px 13px;border-radius:12px;background:#FFF3F3;border:2px solid #E58A8A;animation:ctaTwinkle 1.6s ease-in-out infinite}
   .cta-apply{
     display:flex;align-items:center;justify-content:center;gap:13px;
     width:100%;min-height:76px;padding:15px 16px;border-radius:16px;
