@@ -838,6 +838,22 @@
         : '2026년 기준중위소득 60% (부양가족 ' + famText + '명 기준' + (Number.isInteger(S.fam) ? '' : ' 중간값') + ', 법원 결정에 따라 달라질 수 있음)';
     }
 
+    // 보유 재산(청산가치) 힌트 — 60개월 초과 시 입력칸 바로 아래 즉시 안내
+    var ah = $('assetHint');
+    if (asset <= 0){
+      ah.className = 'hint';
+      ah.textContent = '예금·차량 등 재산에서 담보·최우선변제를 뺀 가액';
+    } else if (liquidationApplied && avail > 0 && estMonths > 60){
+      ah.className = 'hint is-error';
+      ah.textContent = '약 ' + manLabel(asset) + ' · 가용소득 기준 60개월(최장 기간)을 초과합니다 (약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월 필요 · 월 변제금 상향 또는 재산 처분 상담 필요)';
+    } else if (liquidationApplied){
+      ah.className = 'hint';
+      ah.innerHTML = '약 <b>' + manLabel(asset) + '</b> · 청산가치 보장의 원칙이 적용되었습니다';
+    } else {
+      ah.className = 'hint';
+      ah.innerHTML = '약 <b>' + manLabel(asset) + '</b> · 변제액과 비교해 안내합니다';
+    }
+
     // 청산가치 상환 방식 선택 UI
     var liqOpts = $('liqOpts');
     if (liquidationApplied && avail > 0){
@@ -913,7 +929,7 @@
 
     // 기간 표기
     $('outPeriod').textContent = isExtend
-      ? '약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월 기준'
+      ? (estMonths > 60 ? '60개월 초과 · 조정 필요' : '약 ' + (Math.round(exactMonths * 10) / 10).toFixed(1) + '개월 기준')
       : m + '개월 기준';
 
     // 산식
