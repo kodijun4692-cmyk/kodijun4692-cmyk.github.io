@@ -68,7 +68,7 @@
     height:42px;padding:0 10px;border-radius:10px;text-decoration:none;
     font-size:13px;font-weight:700;letter-spacing:-.02em;line-height:1;
     white-space:nowrap;overflow:hidden;
-    transition:background-color .18s ease, border-color .18s ease;
+    transition:background-color .18s ease, border-color .18s ease, box-shadow .18s ease;
   }
   .head-tel,.head-kakao{
     flex:1 1 0;min-width:0;
@@ -79,20 +79,21 @@
   .head-simple{
     flex:1 1 0;min-width:0;
     background:#E2B94C;border:1px solid #E2B94C;color:var(--navy);font-weight:800;
+    box-shadow:0 0 0 1px rgba(226,185,76,.40),0 0 12px 1px rgba(240,166,0,.45);
   }
   .head-simple::after{
-    content:"";position:absolute;top:-30%;bottom:-30%;left:-45%;width:34%;
-    background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.42),rgba(255,255,255,0));
+    content:"";position:absolute;top:-40%;bottom:-40%;left:-65%;width:60%;
+    background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.72) 50%,transparent 80%);
     transform:skewX(-16deg);pointer-events:none;
-    animation:headSheen 5.4s ease-in-out infinite;
+    animation:headSheen 2.4s ease-in-out infinite;
   }
   .head-tel:hover,.head-kakao:hover{background:rgba(255,255,255,.12);border-color:rgba(226,185,76,.72)}
-  .head-simple:hover{background:#EDC65F;border-color:#EDC65F}
+  .head-simple:hover{background:#EDC65F;border-color:#EDC65F;box-shadow:0 0 0 1px rgba(255,255,255,.38),0 0 16px 2px rgba(255,214,110,.62)}
   .head-cta a:active{transform:translateY(1px)}
   .head-cta a:focus-visible{outline:2px solid #FBF1D8;outline-offset:2px}
   @keyframes headSheen{
-    0%,62%{left:-45%}
-    86%,100%{left:118%}
+    0%,42%{left:-65%}
+    78%,100%{left:132%}
   }
   @media (prefers-reduced-motion:reduce){
     .head-simple::after{animation:none}
