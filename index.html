@@ -58,59 +58,53 @@
     font-size:clamp(22px,5.6vw,25px);font-weight:800;letter-spacing:-.02em;line-height:1.28;color:#fff;
   }
   .brand .sub{font-size:15px;font-weight:600;color:#C2CEDF;line-height:1.3;margin-top:3px}
-  .head-tel{
-    flex:1 1 100%;display:flex;align-items:center;justify-content:center;
-    min-height:50px;text-decoration:none;color:var(--navy);
-    background:var(--gold);border-radius:12px;padding:12px 18px;
-    font-size:17px;font-weight:800;letter-spacing:.01em;white-space:nowrap;
-  }
-  @media (min-width:620px){
-    .head-tel{flex:0 0 auto;min-height:46px;border-radius:999px;padding:10px 20px;font-size:16px}
-  }
-
-  /* ---------- 상단 간편 상담 · 카톡 버튼 (계산 전 바로 신청) ---------- */
+  /* 상단 3버튼 한 줄: 전화 · 카톡 · 간편 상담 (네이비 & 골드 2색) */
   .site-header .head-cta{
-    flex:1 1 100%;display:flex;align-items:stretch;justify-content:flex-end;
-    gap:8px;min-width:0;
+    flex:1 1 100%;display:flex;align-items:stretch;gap:8px;min-width:0;
   }
-  .head-simple,.head-kakao{
-    position:relative;display:inline-flex;align-items:center;justify-content:center;gap:6px;
-    min-height:48px;padding:0 14px;border-radius:12px;text-decoration:none;
-    font-size:15px;font-weight:800;letter-spacing:-.02em;line-height:1;
-    white-space:nowrap;word-break:keep-all;overflow:hidden;
+  .head-cta a{
+    position:relative;display:inline-flex;align-items:center;justify-content:center;
+    height:42px;padding:0 10px;border-radius:10px;text-decoration:none;
+    font-size:13px;font-weight:700;letter-spacing:-.02em;line-height:1;
+    white-space:nowrap;overflow:hidden;
+    transition:background-color .18s ease, border-color .18s ease;
   }
+  .head-tel,.head-kakao{
+    flex:1 1 0;min-width:0;
+    background:rgba(255,255,255,.06);border:1px solid rgba(226,185,76,.45);
+  }
+  .head-tel{flex:1.25 1 0;color:#fff;font-weight:800;letter-spacing:0;font-variant-numeric:tabular-nums}
+  .head-kakao{color:#EADFBF}
   .head-simple{
-    flex:1 1 auto;min-width:0;color:#0F1E36;
-    background:linear-gradient(180deg,#FFD34D 0%,#F1A400 100%);border:2px solid #0F1E36;
-    animation:headGlow 3s ease-in-out infinite;
+    flex:1 1 0;min-width:0;
+    background:#E2B94C;border:1px solid #E2B94C;color:var(--navy);font-weight:800;
   }
   .head-simple::after{
-    content:"";position:absolute;top:-30%;bottom:-30%;left:-45%;width:36%;
-    background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.5),rgba(255,255,255,0));
+    content:"";position:absolute;top:-30%;bottom:-30%;left:-45%;width:34%;
+    background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.42),rgba(255,255,255,0));
     transform:skewX(-16deg);pointer-events:none;
-    animation:headSheen 4.6s ease-in-out infinite;
+    animation:headSheen 5.4s ease-in-out infinite;
   }
-  .head-kakao{
-    flex:0 0 auto;background:#FEE500;color:#191919;border:2px solid #E4CE00;
-    box-shadow:0 2px 0 rgba(0,0,0,.22);
-  }
-  .head-simple .hi,.head-kakao .hi{font-size:16px;line-height:1;margin-top:-1px}
-  @keyframes headGlow{
-    0%,100%{box-shadow:0 2px 0 #0F1E36, 0 0 0 0 rgba(255,198,26,.45)}
-    50%{box-shadow:0 2px 0 #0F1E36, 0 0 0 7px rgba(255,198,26,0)}
-  }
+  .head-tel:hover,.head-kakao:hover{background:rgba(255,255,255,.12);border-color:rgba(226,185,76,.72)}
+  .head-simple:hover{background:#EDC65F;border-color:#EDC65F}
+  .head-cta a:active{transform:translateY(1px)}
+  .head-cta a:focus-visible{outline:2px solid #FBF1D8;outline-offset:2px}
   @keyframes headSheen{
-    0%,60%{left:-45%}
-    84%,100%{left:118%}
+    0%,62%{left:-45%}
+    86%,100%{left:118%}
   }
   @media (prefers-reduced-motion:reduce){
-    .head-simple,.head-simple::after{animation:none}
+    .head-simple::after{animation:none}
+  }
+  @media (max-width:360px){
+    .head-cta a{font-size:12px;padding:0 8px;height:40px}
   }
   @media (min-width:620px){
-    .site-header .head-cta{flex:1 1 100%;order:3;justify-content:flex-end}
-    .head-tel{order:2}
-    .head-simple,.head-kakao{min-height:44px;border-radius:999px;padding:0 16px;font-size:14.5px}
-    .head-simple{flex:0 0 auto}
+    .site-header .inner{flex-wrap:nowrap;gap:16px;padding:12px 18px}
+    .brand .name{font-size:22px}
+    .site-header .head-cta{flex:0 0 auto}
+    .head-cta a{height:40px;border-radius:999px;padding:0 15px;font-size:13.5px}
+    .head-tel,.head-kakao,.head-simple{flex:0 0 auto}
   }
 
   /* ---------- layout ---------- */
@@ -477,10 +471,10 @@
       </div>
     </div>
     <div class="head-cta">
-      <a class="head-simple" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener" aria-label="간편 상담 신청 (새 창)"><span class="hi" aria-hidden="true">📝</span><span class="hl">간편 상담 신청</span></a>
-      <a class="head-kakao" href="https://pf.kakao.com/_QVxnxmn/chat" target="_blank" rel="noopener" aria-label="카카오톡 1:1 상담 (새 창)"><span class="hi" aria-hidden="true">💬</span><span class="hl">카톡 1:1</span></a>
+      <a class="head-tel" href="tel:02-6956-8141" aria-label="전화 상담 02-6956-8141">02-6956-8141</a>
+      <a class="head-kakao" href="https://pf.kakao.com/_QVxnxmn/chat" target="_blank" rel="noopener" aria-label="카카오톡 상담 (새 창)">카톡 상담</a>
+      <a class="head-simple" href="https://docs.google.com/forms/d/e/1FAIpQLSdIXW1HcoL6hFb2Pv_dq9QOOh7EvcN9kCfsQm81BHZgRlY9DA/viewform" target="_blank" rel="noopener" aria-label="간편 상담 신청 (새 창)">간편 상담</a>
     </div>
-    <a class="head-tel" href="tel:02-6956-8141">02-6956-8141</a>
   </div>
 </header>
 
